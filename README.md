@@ -29,7 +29,21 @@
 **Limitation:**  
 - The **cover text must be sufficiently long** to hide the secret message.  
 - The minimum length of the cover text depends on the **combined length of the secret message and the encryption key**.  
+- Approximate formula:
+
+\[
+\text{Minimum Cover Text Length} \ge (\text{Length of Secret Message} + \text{Length of Key}) \times X
+\]
+
+Where:  
+- **Length of Secret Message** = number of characters in the secret text.  
+- **Length of Key** = number of characters in the encryption key.  
+- **X** = factor depending on the encryption method:  
+  - Caesar Cipher → X ≈ 1  
+  - AES-256 → X ≈ 3–4 (more space required for encryption)
+
 - If the cover text is too short, the program will display an **error** and ask for a longer text.
+
 
 ### Extracting a message:
 
@@ -51,6 +65,7 @@ git clone https://github.com/uttkarsh123-shiv/InvisiCrypt.git
 cd InvisiCrypt
  g++ src/*.cpp -I. -std=c++17 -O2 -lssl -lcrypto -o textstego
 ./textstego
+
 
 
 
