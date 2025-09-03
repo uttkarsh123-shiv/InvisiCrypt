@@ -25,6 +25,12 @@
    - Enter a secret key (used for encryption).  
    - The program outputs **stego text** with invisible characters embedded.
 
+   **Limitation:**  
+- The **cover text must be sufficiently long** to hide the secret message.  
+- The minimum length of the cover text depends on the **combined length of the secret message and the encryption key**.  
+- If the cover text is too short, the program will display an **error** and ask for a longer text.
+
+
 2. **Extracting a message**:
    - Paste the stego text into the tool.  
    - Choose the encryption algorithm used.  
@@ -44,5 +50,6 @@ git clone https://github.com/uttkarsh123-shiv/InvisiCrypt.git
 cd InvisiCrypt
  g++ src/*.cpp -I. -std=c++17 -O2 -lssl -lcrypto -o textstego
 ./textstego
+
 
 
