@@ -18,24 +18,25 @@
 
 ## How it Works
 
-1. **Hiding a message**:
-   - Enter a cover text (the normal-looking visible text).  
-   - Enter a secret message.  
-   - Choose an encryption algorithm (Caesar or AES-256).  
-   - Enter a secret key (used for encryption).  
-   - The program outputs **stego text** with invisible characters embedded.
+### Hiding a message:
 
-  **Limitation:**  
-    - The **cover text must be sufficiently long** to hide the secret message.  
-    - The minimum length of the cover text depends on the **combined length of the secret message and the encryption key**.  
-    - If the cover text is too short, the program will display an **error** and ask for a longer text.
+1. Enter a cover text (the normal-looking visible text).  
+2. Enter a secret message.  
+3. Choose an encryption algorithm (Caesar or AES-256).  
+4. Enter a secret key (used for encryption).  
+5. The program outputs **stego text** with invisible characters embedded.
 
+**Limitation:**  
+- The **cover text must be sufficiently long** to hide the secret message.  
+- The minimum length of the cover text depends on the **combined length of the secret message and the encryption key**.  
+- If the cover text is too short, the program will display an **error** and ask for a longer text.
 
-2. **Extracting a message**:
-   - Paste the stego text into the tool.  
-   - Choose the encryption algorithm used.  
-   - Enter the secret key.  
-   - The original message is recovered.
+### Extracting a message:
+
+1. Paste the stego text into the tool.  
+2. Choose the encryption algorithm used.  
+3. Enter the secret key.  
+4. The original message is recovered.
 
 > Note: Terminals may display garbled characters due to zero-width characters. Copying the text to a browser or chat app preserves invisibility.
 
@@ -50,6 +51,7 @@ git clone https://github.com/uttkarsh123-shiv/InvisiCrypt.git
 cd InvisiCrypt
  g++ src/*.cpp -I. -std=c++17 -O2 -lssl -lcrypto -o textstego
 ./textstego
+
 
 
 
