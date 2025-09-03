@@ -1,4 +1,4 @@
-# MediaCrypt – Phase 1: Text Steganography
+# InvisiCrypt – Phase 1: Text Steganography
 
 **MediaCrypt** is a multi-phase steganography project designed to hide secret messages in various types of media. Phase 1 focuses on **text-based steganography** using zero-width character embedding combined with encryption. Future phases will include **image and video steganography**.
 
@@ -41,4 +41,7 @@
 
 ```bash
 git clone https://github.com/yourusername/MediaCrypt.git
-cd MediaCrypt
+cd InvisiCrypt
+ g++ src/*.cpp -I. -std=c++17 -O2 -lssl -lcrypto -o textstego
+./textstego
+
