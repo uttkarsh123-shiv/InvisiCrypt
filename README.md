@@ -40,8 +40,9 @@
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/MediaCrypt.git
+git clone https://github.com/uttkarsh123-shiv/InvisiCrypt.git
 cd InvisiCrypt
  g++ src/*.cpp -I. -std=c++17 -O2 -lssl -lcrypto -o textstego
 ./textstego
+
 
