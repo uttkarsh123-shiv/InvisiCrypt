@@ -1,139 +1,245 @@
 const express = require('express');
+const cors = require('cors');
+const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
-const { spawn } = require('child_process');
 
 const app = express();
-app.use(express.json());
+const PORT = 5000;
 
-// Serve static files from frontend directory
+app.use(cors());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.text({ limit: '50mb' }));
+
+// Serve frontend
 app.use(express.static(path.join(__dirname, '..', 'frontend')));
 
-// CORS middleware
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-  next();
+// Get binary path
+const getBinaryPath = () => {
+    const exeName = process.platform === 'win32' ? 'textstego.exe' : 'textstego';
+    const binaryPath = path.join(__dirname, exeName);
+    
+    if (!fs.existsSync(binaryPath)) {
+        throw new Error(`Binary not found at ${binaryPath}. Please run 'npm run build' first.`);
+    }
+    
+    return binaryPath;
+};
+
+// Hide endpoint
+app.post('/api/hide', (req, res) => {
+    try {
+        const { cover_text, secret_message, algorithm, key } = req.body;
+        
+        // Validate inputs
+        if (!cover_text || typeof cover_text !== 'string') {
+            return res.status(400).json({ error: 'cover_text is required and must be a string' });
+        }
+        if (!secret_message || typeof secret_message !== 'string') {
+            return res.status(400).json({ error: 'secret_message is required and must be a string' });
+        }
+        if (!algorithm || !['caesar', 'aes'].includes(algorithm)) {
+            return res.status(400).json({ error: 'algorithm must be "caesar" or "aes"' });
+        }
+        if (!key || typeof key !== 'string') {
+            return res.status(400).json({ error: 'key is required and must be a string' });
+        }
+        
+        const binaryPath = getBinaryPath();
+        
+        // Spawn process
+        const process = spawn(binaryPath, ['hide', cover_text, secret_message, algorithm, key], {
+            stdio: ['pipe', 'pipe', 'pipe']
+        });
+        
+        let stdout = '';
+        let stderr = '';
+        
+        process.stdout.on('data', (data) => {
+            stdout += data.toString();
+        });
+        
+        process.stderr.on('data', (data) => {
+            stderr += data.toString();
+        });
+        
+        process.on('close', (code) => {
+            if (code !== 0) {
+                console.error('Hide error:', stderr);
+                return res.status(500).json({ 
+                    error: 'Failed to hide message',
+                    details: stderr || 'Unknown error',
+                    code: code
+                });
+            }
+            
+            if (!stdout) {
+                return res.status(500).json({ 
+                    error: 'No output from binary',
+                    details: 'Binary returned empty result'
+                });
+            }
+            
+            res.json({ stego_text: stdout });
+        });
+        
+        process.on('error', (err) => {
+            console.error('Process error:', err);
+            res.status(500).json({ 
+                error: 'Failed to execute binary',
+                details: err.message
+            });
+        });
+        
+    } catch (error) {
+        console.error('Hide endpoint error:', error);
+        res.status(500).json({ 
+            error: 'Internal server error',
+            details: error.message
+        });
+    }
 });
 
-const MAX_COVER_LENGTH = 5000;
-const MAX_SECRET_LENGTH = 500;
-const ALLOWED_MODES = ['hide', 'extract'];
-const ALLOWED_ALGOS = ['caesar', 'aes'];
-
-function findBinaryPath() {
-  const executableName = process.platform === 'win32' ? 'textstego.exe' : 'textstego';
-  const candidates = [
-    path.join(__dirname, 'build', executableName), // CMake build directory (preferred)
-    path.join(__dirname, 'bin', executableName),
-    path.join(__dirname, 'src', executableName),
-    path.join(__dirname, executableName)
-  ];
-
-  for (const candidate of candidates) {
-    if (fs.existsSync(candidate)) {
-      return candidate;
+// Extract endpoint
+app.post('/api/extract', (req, res) => {
+    try {
+        const { stego_text, algorithm, key } = req.body;
+        
+        // Validate inputs
+        if (!stego_text || typeof stego_text !== 'string') {
+            return res.status(400).json({ error: 'stego_text is required and must be a string' });
+        }
+        if (!algorithm || !['caesar', 'aes'].includes(algorithm)) {
+            return res.status(400).json({ error: 'algorithm must be "caesar" or "aes"' });
+        }
+        if (!key || typeof key !== 'string') {
+            return res.status(400).json({ error: 'key is required and must be a string' });
+        }
+        
+        const binaryPath = getBinaryPath();
+        
+        // Spawn process with stdin
+        const process = spawn(binaryPath, ['extract', algorithm, key], {
+            stdio: ['pipe', 'pipe', 'pipe'],
+            encoding: 'utf8'
+        });
+        
+        let stdout = '';
+        let stderr = '';
+        let stdinError = null;
+        
+        process.stdout.on('data', (data) => {
+            stdout += data.toString('utf8');
+        });
+        
+        process.stderr.on('data', (data) => {
+            stderr += data.toString('utf8');
+        });
+        
+        // Handle stdin errors
+        process.stdin.on('error', (err) => {
+            stdinError = err;
+            console.error('Stdin error:', err);
+        });
+        
+        // Write stego_text to stdin with proper error handling
+        try {
+            const buffer = Buffer.from(stego_text, 'utf8');
+            if (!process.stdin.write(buffer)) {
+                process.stdin.once('drain', () => {
+                    process.stdin.end();
+                });
+            } else {
+                process.stdin.end();
+            }
+        } catch (err) {
+            console.error('Error writing to stdin:', err);
+            process.kill();
+            return res.status(500).json({ 
+                error: 'Failed to write stego text to process',
+                details: err.message
+            });
+        }
+        
+        process.on('close', (code) => {
+            if (stdinError) {
+                return res.status(500).json({ 
+                    error: 'Failed to write to process stdin',
+                    details: stdinError.message
+                });
+            }
+            
+            if (code !== 0) {
+                console.error('Extract error (code ' + code + '):', stderr);
+                // Parse stderr to get the actual error message
+                const errorMatch = stderr.match(/ERROR:\s*(.+)/);
+                const errorDetails = errorMatch ? errorMatch[1] : (stderr || 'Unknown error');
+                
+                return res.status(500).json({ 
+                    error: 'Failed to extract message',
+                    details: errorDetails.trim(),
+                    code: code,
+                    debug: {
+                        stego_length: stego_text.length,
+                        algorithm: algorithm,
+                        key_provided: key.length > 0,
+                        stderr: stderr
+                    }
+                });
+            }
+            
+            if (!stdout) {
+                return res.status(500).json({ 
+                    error: 'No message extracted',
+                    details: 'Extraction returned empty result. Check that the stego text, algorithm, and key are correct.',
+                    debug: {
+                        stego_length: stego_text.length,
+                        algorithm: algorithm,
+                        key_provided: key.length > 0,
+                        stderr: stderr
+                    }
+                });
+            }
+            
+            res.json({ secret_message: stdout });
+        });
+        
+        process.on('error', (err) => {
+            console.error('Process error:', err);
+            res.status(500).json({ 
+                error: 'Failed to execute binary',
+                details: err.message
+            });
+        });
+        
+    } catch (error) {
+        console.error('Extract endpoint error:', error);
+        res.status(500).json({ 
+            error: 'Internal server error',
+            details: error.message
+        });
     }
-  }
-
-  return null;
-}
-
-function runStegoProcess(args) {
-  return new Promise((resolve, reject) => {
-    const binaryPath = findBinaryPath();
-
-    if (!binaryPath) {
-      return reject(
-        new Error(
-          'C++ binary not found. Build the sources in backend/src (e.g. "g++ -std=c++17 src/*.cpp -o bin/textstego").'
-        )
-      );
-    }
-
-    const child = spawn(binaryPath, args, { windowsHide: true });
-
-    let stdout = '';
-    let stderr = '';
-
-    child.stdout.on('data', chunk => {
-      stdout += chunk.toString();
-    });
-
-    child.stderr.on('data', chunk => {
-      stderr += chunk.toString();
-    });
-
-    child.on('error', err => reject(err));
-
-    child.on('close', code => {
-      if (code !== 0) {
-        return reject(new Error(stderr.trim() || stdout.trim() || `Process exited with code ${code}`));
-      }
-      resolve(stdout.trim());
-    });
-  });
-}
-
-app.post('/stego', async (req, res) => {
-  const { mode, coverText, secretText, stegoText, algo, key } = req.body || {};
-
-  if (!mode || !ALLOWED_MODES.includes(mode)) {
-    return res.status(400).json({ error: 'mode must be "hide" or "extract"' });
-  }
-
-  if (!algo || !ALLOWED_ALGOS.includes(algo)) {
-    return res.status(400).json({ error: 'algo must be "caesar" or "aes"' });
-  }
-
-  if (!key || typeof key !== 'string') {
-    return res.status(400).json({ error: 'key is required' });
-  }
-
-  let args;
-
-  if (mode === 'hide') {
-    if (!coverText || !secretText) {
-      return res.status(400).json({ error: 'coverText and secretText are required for hide' });
-    }
-
-    if (coverText.length > MAX_COVER_LENGTH) {
-      return res.status(400).json({ error: `coverText must be <= ${MAX_COVER_LENGTH} characters` });
-    }
-
-    if (secretText.length > MAX_SECRET_LENGTH) {
-      return res.status(400).json({ error: `secretText must be <= ${MAX_SECRET_LENGTH} characters` });
-    }
-
-    args = ['hide', coverText, secretText, algo, key];
-  } else {
-    if (!stegoText) {
-      return res.status(400).json({ error: 'stegoText is required for extract' });
-    }
-
-    args = ['extract', stegoText, algo, key];
-  }
-
-  try {
-    const result = await runStegoProcess(args);
-    res.json({ result });
-  } catch (error) {
-    console.error('Error running stego binary:', error);
-    res.status(500).json({ error: error.message });
-  }
 });
 
-// Root route - serve frontend
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+// Health check
+app.get('/api/health', (req, res) => {
+    try {
+        const binaryPath = getBinaryPath();
+        res.json({ 
+            status: 'ok',
+            binary_exists: fs.existsSync(binaryPath),
+            binary_path: binaryPath
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            status: 'error',
+            error: error.message
+        });
+    }
 });
 
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
-  console.log(`Frontend available at http://localhost:${PORT}`);
+    console.log(`InvisiCrypt server running on http://localhost:${PORT}`);
+    console.log(`Make sure the C++ binary is built (run 'npm run build')`);
 });
+
