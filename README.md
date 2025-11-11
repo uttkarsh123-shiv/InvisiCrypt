@@ -58,13 +58,80 @@ Where:
 
 ## Installation
 
+### Prerequisites
+
+- **Node.js** (v14 or higher)
+- **CMake** (v3.10 or higher)
+- **OpenSSL** development libraries
+  - On Ubuntu/Debian: `sudo apt-get install libssl-dev cmake`
+  - On macOS: `brew install openssl cmake`
+  - On Windows: Install OpenSSL and CMake from their official websites
+
+### Local Setup
+
 1. Clone the repository:
 
 ```bash
 git clone https://github.com/uttkarsh123-shiv/InvisiCrypt.git
 cd InvisiCrypt
- g++ src/*.cpp -I. -std=c++17 -O2 -lssl -lcrypto -o textstego
-./textstego
+```
+
+2. Install dependencies and build:
+
+```bash
+cd backend
+npm install
+```
+
+The `postinstall` script will automatically build the C++ binary using CMake.
+
+3. Start the server:
+
+```bash
+npm start
+```
+
+4. Open your browser and navigate to:
+
+```
+http://localhost:3000
+```
+
+### Manual Build (if needed)
+
+If you need to rebuild the C++ binary manually:
+
+```bash
+cd backend
+npm run build
+```
+
+Or manually with CMake:
+
+```bash
+cd backend
+mkdir -p build
+cd build
+cmake ..
+cmake --build .
+```
+
+## Deployment on Render
+
+1. Push your code to GitHub
+2. Create a new Web Service on Render
+3. Connect your GitHub repository
+4. Use these settings:
+   - **Build Command**: `cd backend && npm install`
+   - **Start Command**: `cd backend && npm start`
+   - **Environment**: Node
+
+The build process will automatically:
+- Install Node.js dependencies
+- Build the C++ binary using CMake (via `postinstall` script)
+- Start the Express server
+
+**Note**: Make sure CMake and OpenSSL are available in Render's build environment (they should be by default).
 
 
 
