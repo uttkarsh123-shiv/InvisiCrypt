@@ -4,16 +4,22 @@
 #include <string>
 #include <vector>
 
-class Utils {
-public:
-    // SHA-256 of a string -> returns 32 bytes
-    static std::vector<unsigned char> sha256_bytes(const std::string& input);
+namespace Utils {
+    // Convert bytes to binary string
+    std::string bytes_to_binary(const std::vector<unsigned char>& bytes);
+    
+    // Convert binary string to bytes
+    std::vector<unsigned char> binary_to_bytes(const std::string& binary);
+    
+    // Convert string to bytes
+    std::vector<unsigned char> string_to_bytes(const std::string& str);
+    
+    // Convert bytes to string
+    std::string bytes_to_string(const std::vector<unsigned char>& bytes);
+    
+    // Debug: Print hex representation
+    std::string bytes_to_hex(const std::vector<unsigned char>& bytes);
+}
 
-    // bytes -> binary string "0101..."
-    static std::string bytes_to_binary(const std::vector<unsigned char>& bytes);
+#endif // UTILS_H
 
-    // binary string "0101..." -> bytes
-    static std::vector<unsigned char> binary_to_bytes(const std::string& binary);
-};
-
-#endif

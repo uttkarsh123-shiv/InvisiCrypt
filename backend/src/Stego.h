@@ -4,14 +4,23 @@
 #include <string>
 #include <vector>
 
-class Stego {
-public:
-    // embed bits (string of '0'/'1') into cover text using zero-width chars.
-    // returns stego text. throws if not enough capacity.
-    static std::string embed_zero_width(const std::string& cover, const std::string& bits);
+namespace Stego {
+    // Zero-width characters
+    const char32_t ZWSP = 0x200B;  // Zero Width Space (UTF-8: E2 80 8B)
+    const char32_t ZWNJ = 0x200C;  // Zero Width Non-Joiner (UTF-8: E2 80 8C)
+    
+    // Hide binary data in cover text
+    std::string hide(const std::string& cover_text, const std::vector<unsigned char>& data);
+    
+    // Extract binary data from stego text
+    std::vector<unsigned char> extract(const std::string& stego_text);
+    
+    // Debug: Count zero-width characters in text
+    size_t count_zero_width_chars(const std::string& text);
+    
+    // Debug: Get binary representation of stego text
+    std::string get_binary_from_stego(const std::string& stego_text);
+}
 
-    // extract bits from stego text (reads zero-width chars)
-    static std::string extract_zero_width(const std::string& stego);
-};
+#endif // STEGO_H
 
-#endif

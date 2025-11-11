@@ -1,0 +1,25 @@
+{
+  "name": "invisicrypt",
+  "version": "1.0.0",
+  "description": "Text steganography tool using invisible Unicode characters",
+  "main": "backend/index.js",
+  "scripts": {
+    "start": "node backend/index.js",
+    "build": "node backend/build.js",
+    "dev": "node backend/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "multer": "^1.4.5-lts.1",
+    "crypto": "^1.0.1"
+  },
+  "keywords": [
+    "steganography",
+    "cryptography",
+    "security"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+
