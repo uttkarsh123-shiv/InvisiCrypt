@@ -1,39 +1,60 @@
 #include "Utils.h"
-#include <openssl/sha.h>
-#include <bitset>
+#include <sstream>
+#include <iomanip>
 #include <stdexcept>
-#include <vector>
-#include <string>
 
-using namespace std;
-
-vector<unsigned char> Utils::sha256_bytes(const string& input) {
-    vector<unsigned char> out(SHA256_DIGEST_LENGTH);
-    SHA256_CTX ctx;
-    SHA256_Init(&ctx);
-    SHA256_Update(&ctx, (const unsigned char*)input.data(), input.size());
-    SHA256_Final(out.data(), &ctx);
-    return out;
-}
-
-string Utils::bytes_to_binary(const vector<unsigned char>& bytes) {
-    string s;
-    s.reserve(bytes.size() * 8);
-    for (unsigned char b : bytes) {
-        bitset<8> bs(b);
-        s += bs.to_string();
+namespace Utils {
+    std::string bytes_to_binary(const std::vector<unsigned char>& bytes) {
+        std::string binary;
+        binary.reserve(bytes.size() * 8);
+        
+        for (unsigned char byte : bytes) {
+            for (int i = 7; i >= 0; --i) {
+                binary += ((byte >> i) & 1) ? '1' : '0';
+            }
+        }
+        
+        return binary;
     }
-    return s;
+    
+    std::vector<unsigned char> binary_to_bytes(const std::string& binary) {
+        if (binary.length() % 8 != 0) {
+            throw std::runtime_error("Binary string length must be multiple of 8");
+        }
+        
+        std::vector<unsigned char> bytes;
+        bytes.reserve(binary.length() / 8);
+        
+        for (size_t i = 0; i < binary.length(); i += 8) {
+            unsigned char byte = 0;
+            for (int j = 0; j < 8; ++j) {
+                if (binary[i + j] == '1') {
+                    byte |= (1 << (7 - j));
+                } else if (binary[i + j] != '0') {
+                    throw std::runtime_error("Invalid binary character: " + std::string(1, binary[i + j]));
+                }
+            }
+            bytes.push_back(byte);
+        }
+        
+        return bytes;
+    }
+    
+    std::vector<unsigned char> string_to_bytes(const std::string& str) {
+        return std::vector<unsigned char>(str.begin(), str.end());
+    }
+    
+    std::string bytes_to_string(const std::vector<unsigned char>& bytes) {
+        return std::string(bytes.begin(), bytes.end());
+    }
+    
+    std::string bytes_to_hex(const std::vector<unsigned char>& bytes) {
+        std::ostringstream oss;
+        oss << std::hex << std::setfill('0');
+        for (unsigned char byte : bytes) {
+            oss << std::setw(2) << static_cast<int>(byte) << " ";
+        }
+        return oss.str();
+    }
 }
 
-vector<unsigned char> Utils::binary_to_bytes(const string& binary) {
-    if (binary.size() % 8 != 0) throw runtime_error("binary length not multiple of 8");
-    vector<unsigned char> out;
-    out.reserve(binary.size() / 8);
-    for (size_t i = 0; i < binary.size(); i += 8) {
-        string byteStr = binary.substr(i, 8);
-        unsigned char val = (unsigned char) stoi(byteStr, nullptr, 2);
-        out.push_back(val);
-    }
-    return out;
-}

@@ -1,140 +1,126 @@
-# InvisiCrypt – Phase 1: Text Steganography
+# InvisiCrypt 🔐
 
-**MediaCrypt** is a multi-phase steganography project designed to hide secret messages in various types of media. Phase 1 focuses on **text-based steganography** using zero-width character embedding combined with encryption. Future phases will include **image and video steganography**.
-
----
+A text steganography tool that hides secret messages inside normal-looking text using invisible zero-width Unicode characters.
 
 ## Features
 
-- **Hide messages in plain text** using zero-width characters.
-- **Encryption support**:
-  - **Caesar Cipher** – simple substitution cipher.
-  - **AES-256** – strong encryption for secure hiding.
-- **Extract messages** using the same key.
-- **Invisible to normal users** – hidden messages do not affect visible text.
-- **Works across platforms** – text appears normal on web browsers, chat apps, and editors supporting UTF-8.
+- **Invisible Steganography**: Uses Zero Width Space (ZWSP) and Zero Width Non-Joiner (ZWNJ) characters
+- **Encryption Support**: Caesar Cipher or AES (XOR-based) encryption before hiding
+- **Web Interface**: Modern, user-friendly web UI
+- **File Support**: Download stego text and upload for extraction
+- **Robust Error Handling**: Comprehensive debugging and error messages
 
----
+## Architecture
 
-## How it Works
+- **Frontend**: HTML/CSS/JavaScript web interface
+- **Backend**: Node.js + Express server
+- **Core**: C++ binary for steganography operations
 
-### Hiding a message:
+## Prerequisites
 
-1. Enter a cover text (the normal-looking visible text).  
-2. Enter a secret message.  
-3. Choose an encryption algorithm (Caesar or AES-256).  
-4. Enter a secret key (used for encryption).  
-5. The program outputs **stego text** with invisible characters embedded.
-
-**Limitation:**  
-- The **cover text must be sufficiently long** to hide the secret message.  
-- The minimum length of the cover text depends on the **combined length of the secret message and the encryption key**.  
-- Approximate formula:
-
-\[
-\text{Minimum Cover Text Length} \ge (\text{Length of Secret Message} + \text{Length of Key}) \times X
-\]
-
-Where:  
-- **Length of Secret Message** = number of characters in the secret text.  
-- **Length of Key** = number of characters in the encryption key.  
-- **X** = factor depending on the encryption method:  
-  - Caesar Cipher → X ≈ 1  
-  - AES-256 → X ≈ 3–4 (more space required for encryption)
-
-- If the cover text is too short, the program will display an **error** and ask for a longer text.
-
-
-### Extracting a message:
-
-1. Paste the stego text into the tool.  
-2. Choose the encryption algorithm used.  
-3. Enter the secret key.  
-4. The original message is recovered.
-
-> Note: Terminals may display garbled characters due to zero-width characters. Copying the text to a browser or chat app preserves invisibility.
-
----
+- Node.js (v14 or higher)
+- CMake (v3.10 or higher)
+- C++ compiler (GCC, Clang, or MSVC)
+- npm
 
 ## Installation
 
-### Prerequisites
-
-- **Node.js** (v14 or higher)
-- **CMake** (v3.10 or higher)
-- **OpenSSL** development libraries
-  - On Ubuntu/Debian: `sudo apt-get install libssl-dev cmake`
-  - On macOS: `brew install openssl cmake`
-  - On Windows: Install OpenSSL and CMake from their official websites
-
-### Local Setup
-
-1. Clone the repository:
-
+1. Install dependencies:
 ```bash
-git clone https://github.com/uttkarsh123-shiv/InvisiCrypt.git
-cd InvisiCrypt
-```
-
-2. Install dependencies and build:
-
-```bash
-cd backend
 npm install
 ```
 
-The `postinstall` script will automatically build the C++ binary using CMake.
+2. Build the C++ binary:
+```bash
+npm run build
+```
 
-3. Start the server:
+This will compile the C++ code and create `backend/textstego.exe` (Windows) or `backend/textstego` (Linux/Mac).
 
+## Usage
+
+1. Start the server:
 ```bash
 npm start
 ```
 
-4. Open your browser and navigate to:
-
+2. Open your browser and navigate to:
 ```
 http://localhost:3000
 ```
 
-### Manual Build (if needed)
+3. **Hide a message**:
+   - Enter cover text (normal-looking text)
+   - Enter secret message
+   - Select encryption algorithm (Caesar or AES)
+   - Enter encryption key
+   - Click "Hide Message"
+   - Download the stego text
 
-If you need to rebuild the C++ binary manually:
+4. **Extract a message**:
+   - Upload stego.txt file or paste stego text
+   - Select the same encryption algorithm used for hiding
+   - Enter the same encryption key
+   - Click "Extract Message"
+   - View or download the extracted secret
 
-```bash
-cd backend
-npm run build
-```
+## How It Works
 
-Or manually with CMake:
+### Hiding Process
 
-```bash
-cd backend
-mkdir -p build
-cd build
-cmake ..
-cmake --build .
-```
+1. Secret message is encrypted using the selected algorithm and key
+2. Encrypted data is converted to binary (0s and 1s)
+3. A 32-bit length prefix is added to know how many bits to extract
+4. Each binary bit is embedded as:
+   - `0` → Zero Width Space (ZWSP, UTF-8: E2 80 8B)
+   - `1` → Zero Width Non-Joiner (ZWNJ, UTF-8: E2 80 8C)
+5. Zero-width characters are inserted between characters in the cover text
 
-## Deployment on Render
+### Extraction Process
 
-1. Push your code to GitHub
-2. Create a new Web Service on Render
-3. Connect your GitHub repository
-4. Use these settings:
-   - **Build Command**: `cd backend && npm install`
-   - **Start Command**: `cd backend && npm start`
-   - **Environment**: Node
+1. Stego text is scanned for zero-width character sequences
+2. Each sequence is converted back to a binary bit
+3. Length prefix is read to determine how many bits to extract
+4. Binary data is converted back to bytes
+5. Bytes are decrypted using the algorithm and key
+6. Original secret message is recovered
 
-The build process will automatically:
-- Install Node.js dependencies
-- Build the C++ binary using CMake (via `postinstall` script)
-- Start the Express server
+## Troubleshooting
 
-**Note**: Make sure CMake and OpenSSL are available in Render's build environment (they should be by default).
+### Extraction returns empty string
 
+1. **Verify the key**: Make sure you're using the exact same key used for hiding
+2. **Check the algorithm**: The algorithm must match (Caesar or AES)
+3. **Verify stego text**: Ensure the stego text wasn't modified or corrupted
+4. **Check file encoding**: When uploading files, ensure they're saved as UTF-8
 
+### Build errors
 
+- **CMake not found**: Install CMake and ensure it's in your PATH
+- **Compiler not found**: Install a C++ compiler (Visual Studio Build Tools on Windows, GCC/Clang on Linux/Mac)
+- **Binary not created**: Check the build output for errors
 
+### Server errors
 
+- **Port 3000 in use**: Change the port in `backend/index.js`
+- **Binary not found**: Run `npm run build` first
+
+## Debugging
+
+The application includes comprehensive error handling:
+
+- **C++ errors**: Printed to stderr with detailed messages
+- **Backend errors**: Returned as JSON with error details
+- **Frontend errors**: Displayed in error boxes with debug information
+
+## Security Notes
+
+- This is a steganography tool, not a security tool
+- The encryption is basic (Caesar/XOR) - use proper encryption for real security
+- Zero-width characters can be detected by analyzing the text
+- Always use strong, unique keys
+
+## License
+
+MIT
 
