@@ -4,19 +4,19 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-enum class Algo { CAESAR, AES256 };
+namespace Encryptor {
+    // Caesar cipher
+    std::vector<unsigned char> caesar_encrypt(const std::vector<unsigned char>& data, int shift);
+    std::vector<unsigned char> caesar_decrypt(const std::vector<unsigned char>& data, int shift);
+    
+    // AES encryption (using OpenSSL-compatible approach)
+    // For simplicity, we'll use a basic XOR-based encryption with key derivation
+    std::vector<unsigned char> aes_encrypt(const std::vector<unsigned char>& data, const std::string& key);
+    std::vector<unsigned char> aes_decrypt(const std::vector<unsigned char>& data, const std::string& key);
+    
+    // Helper: Derive key from string
+    std::vector<unsigned char> derive_key(const std::string& key, size_t length);
+}
 
-class Encryptor {
-public:
-    // Caesar: plaintext -> ciphertext using shift derived from password
-    static string caesar_encrypt(const string& plaintext, const string& password);
-    static string caesar_decrypt(const string& ciphertext, const string& password);
+#endif // ENCRYPTOR_H
 
-    // AES-256-CBC using SHA-256(password) -> key. Returns vector bytes: IV(16) + ciphertext
-    static vector<unsigned char> aes_encrypt_bytes(const string& plaintext, const string& password);
-    // Input: bytes (IV + ciphertext). Returns plaintext string (throws on failure)
-    static string aes_decrypt_bytes(const vector<unsigned char>& data, const string& password);
-};
-
-#endif

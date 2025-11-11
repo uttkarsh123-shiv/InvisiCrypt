@@ -1,17 +1,17 @@
-#pragma once
+#ifndef STEGO_LIB_H
+#define STEGO_LIB_H
+
 #include <string>
 
-using namespace std;
+// Main API functions
+std::string hide_message(const std::string& cover_text, 
+                        const std::string& secret_message,
+                        const std::string& algorithm,
+                        const std::string& key);
 
-string hide_message(
-    const string &cover,
-    const string &secret,
-    const string &algo,   // "caesar" or "aes"
-    const string &key
-);
+std::string extract_message(const std::string& stego_text,
+                           const std::string& algorithm,
+                           const std::string& key);
 
-string extract_message(
-    const string &stegoText,
-    const string &algo,
-    const string &key
-);
+#endif // STEGO_LIB_H
+
