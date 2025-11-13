@@ -7,204 +7,94 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="app-header">
-            <div class="header-content">
-                <div class="logo-section">
-                    <h1 class="logo">InvisiCrypt</h1>
-                    <span class="tagline">Text Steganography Tool</span>
-                </div>
-                <div class="header-actions">
-                    <button class="icon-btn" id="theme-toggle" title="Toggle theme">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
+    <div class="container">
+        <header>
+            <h1>🔐 InvisiCrypt</h1>
+            <p class="subtitle">Hide secret messages in plain sight using invisible Unicode characters</p>
         </header>
 
-        <!-- Navigation Tabs -->
-        <nav class="nav-bar">
-            <div class="nav-content">
-                <div class="nav-section">
-                    <span class="nav-label">Tools</span>
-                    <div class="nav-tabs">
-                        <button class="nav-tab active" data-tab="hide">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                            </svg>
-                            Hide Message
-                        </button>
-                        <button class="nav-tab" data-tab="extract">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                            </svg>
-                            Extract Message
-                        </button>
-                    </div>
+        <div class="tabs">
+            <button class="tab-button active" data-tab="hide">Hide Message</button>
+            <button class="tab-button" data-tab="extract">Extract Message</button>
+        </div>
+
+        <!-- Hide Tab -->
+        <div id="hide-tab" class="tab-content active">
+            <div class="form-group">
+                <label for="cover-text">Cover Text (Normal-looking text):</label>
+                <textarea id="cover-text" rows="4" placeholder="Enter the text that will contain the hidden message..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="secret-message">Secret Message:</label>
+                <textarea id="secret-message" rows="4" placeholder="Enter the message you want to hide..."></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="algorithm">Encryption Algorithm:</label>
+                    <select id="algorithm">
+                        <option value="caesar">Caesar Cipher</option>
+                        <option value="aes">AES (XOR-based)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="key">Encryption Key:</label>
+                    <input type="text" id="key" placeholder="Enter encryption key...">
                 </div>
             </div>
-        </nav>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <div class="content-wrapper">
-                <!-- Hide Tab -->
-                <div id="hide-tab" class="tab-panel active">
-                    <div class="panel-header">
-                        <h2>Hide Secret Message</h2>
-                        <p>Embed your secret message invisibly within normal-looking text</p>
-                    </div>
+            <button id="hide-btn" class="btn btn-primary">Hide Message</button>
 
-                    <div class="form-container">
-                        <div class="form-group">
-                            <label for="cover-text">
-                                <span>Cover Text</span>
-                                <span class="label-hint">Normal-looking text that will contain the hidden message</span>
-                            </label>
-                            <textarea id="cover-text" rows="5" placeholder="Enter the text that will contain the hidden message..."></textarea>
-                        </div>
+            <div id="hide-result" class="result-box" style="display: none;">
+                <h3>Stego Text (with hidden message):</h3>
+                <textarea id="stego-output" rows="6" readonly></textarea>
+                <button id="download-stego" class="btn btn-secondary">Download as stego.txt</button>
+            </div>
 
-                        <div class="form-group">
-                            <label for="secret-message">
-                                <span>Secret Message</span>
-                                <span class="label-hint">The message you want to hide</span>
-                            </label>
-                            <textarea id="secret-message" rows="5" placeholder="Enter the message you want to hide..."></textarea>
-                        </div>
+            <div id="hide-error" class="error-box" style="display: none;"></div>
+        </div>
 
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="algorithm">
-                                    <span>Encryption Algorithm</span>
-                                </label>
-                                <select id="algorithm">
-                                    <option value="caesar">Caesar Cipher</option>
-                                    <option value="aes">AES (XOR-based)</option>
-                                </select>
-                            </div>
+        <!-- Extract Tab -->
+        <div id="extract-tab" class="tab-content">
+            <div class="form-group">
+                <label for="stego-input">Stego Text (Upload file or paste):</label>
+                <div class="file-upload-area">
+                    <input type="file" id="stego-file" accept=".txt">
+                    <span>or paste text below</span>
+                </div>
+                <textarea id="stego-input" rows="6" placeholder="Paste stego text or upload file above..."></textarea>
+            </div>
 
-                            <div class="form-group">
-                                <label for="key">
-                                    <span>Encryption Key</span>
-                                </label>
-                                <input type="text" id="key" placeholder="Enter encryption key...">
-                            </div>
-                        </div>
-
-                        <button id="hide-btn" class="btn btn-primary">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="17 8 12 3 7 8"></polyline>
-                                <line x1="12" y1="3" x2="12" y2="15"></line>
-                            </svg>
-                            Hide Message
-                        </button>
-
-                        <div id="hide-result" class="result-panel" style="display: none;">
-                            <div class="result-header">
-                                <h3>Stego Text Generated</h3>
-                                <p>Your secret message has been hidden. Download the stego text below.</p>
-                            </div>
-                            <textarea id="stego-output" rows="8" readonly></textarea>
-                            <button id="download-stego" class="btn btn-secondary">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                    <polyline points="7 10 12 15 17 10"></polyline>
-                                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                                </svg>
-                                Download stego.txt
-                            </button>
-                        </div>
-
-                        <div id="hide-error" class="error-panel" style="display: none;"></div>
-                    </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="extract-algorithm">Encryption Algorithm:</label>
+                    <select id="extract-algorithm">
+                        <option value="caesar">Caesar Cipher</option>
+                        <option value="aes">AES (XOR-based)</option>
+                    </select>
                 </div>
 
-                <!-- Extract Tab -->
-                <div id="extract-tab" class="tab-panel">
-                    <div class="panel-header">
-                        <h2>Extract Secret Message</h2>
-                        <p>Recover hidden messages from stego text</p>
-                    </div>
-
-                    <div class="form-container">
-                        <div class="form-group">
-                            <label for="stego-input">
-                                <span>Stego Text</span>
-                                <span class="label-hint">Upload a file or paste the stego text</span>
-                            </label>
-                            <div class="file-upload-zone" id="upload-zone">
-                                <input type="file" id="stego-file" accept=".txt" hidden>
-                                <div class="upload-content">
-                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                        <polyline points="17 8 12 3 7 8"></polyline>
-                                        <line x1="12" y1="3" x2="12" y2="15"></line>
-                                    </svg>
-                                    <p class="upload-text">Drag and drop your file here or <span class="upload-link">click to browse</span></p>
-                                    <p class="upload-hint">or paste text below</p>
-                                </div>
-                            </div>
-                            <textarea id="stego-input" rows="6" placeholder="Paste stego text here..."></textarea>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="extract-algorithm">
-                                    <span>Encryption Algorithm</span>
-                                </label>
-                                <select id="extract-algorithm">
-                                    <option value="caesar">Caesar Cipher</option>
-                                    <option value="aes">AES (XOR-based)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="extract-key">
-                                    <span>Encryption Key</span>
-                                </label>
-                                <input type="text" id="extract-key" placeholder="Enter encryption key...">
-                            </div>
-                        </div>
-
-                        <button id="extract-btn" class="btn btn-primary">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7 10 12 15 17 10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                            </svg>
-                            Extract Message
-                        </button>
-
-                        <div id="extract-result" class="result-panel" style="display: none;">
-                            <div class="result-header">
-                                <h3>Secret Message Extracted</h3>
-                                <p>Your hidden message has been successfully recovered.</p>
-                            </div>
-                            <textarea id="secret-output" rows="8" readonly></textarea>
-                            <button id="download-secret" class="btn btn-secondary">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                    <polyline points="7 10 12 15 17 10"></polyline>
-                                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                                </svg>
-                                Download secret.txt
-                            </button>
-                        </div>
-
-                        <div id="extract-error" class="error-panel" style="display: none;"></div>
-                    </div>
+                <div class="form-group">
+                    <label for="extract-key">Encryption Key:</label>
+                    <input type="text" id="extract-key" placeholder="Enter encryption key...">
                 </div>
             </div>
-        </main>
+
+            <button id="extract-btn" class="btn btn-primary">Extract Message</button>
+
+            <div id="extract-result" class="result-box" style="display: none;">
+                <h3>Extracted Secret Message:</h3>
+                <textarea id="secret-output" rows="6" readonly></textarea>
+                <button id="download-secret" class="btn btn-secondary">Download as secret.txt</button>
+            </div>
+
+            <div id="extract-error" class="error-box" style="display: none;"></div>
+        </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
+
