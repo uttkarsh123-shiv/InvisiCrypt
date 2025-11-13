@@ -2,6 +2,7 @@
 node_modules/
 package-lock.json
 
+
 # Build artifacts
 backend/build/
 backend/textstego
