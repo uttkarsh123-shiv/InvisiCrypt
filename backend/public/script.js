@@ -1,14 +1,14 @@
 // Tab switching
-document.querySelectorAll('.tab-button').forEach(button => {
+document.querySelectorAll('.nav-tab').forEach(button => {
     button.addEventListener('click', () => {
         const tabName = button.dataset.tab;
         
         // Update buttons
-        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
         button.classList.add('active');
         
         // Update content
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(content => content.classList.remove('active'));
         document.getElementById(`${tabName}-tab`).classList.add('active');
         
         // Clear previous results
@@ -25,14 +25,49 @@ function clearResults() {
 }
 
 // File upload for stego text
-document.getElementById('stego-file').addEventListener('change', (e) => {
+const uploadZone = document.getElementById('upload-zone');
+const fileInput = document.getElementById('stego-file');
+
+// Click to upload
+uploadZone.addEventListener('click', () => {
+    fileInput.click();
+});
+
+// File input change
+fileInput.addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = (event) => {
             document.getElementById('stego-input').value = event.target.result;
+            uploadZone.classList.add('file-loaded');
         };
         // Read as UTF-8 to preserve zero-width characters
+        reader.readAsText(file, 'UTF-8');
+    }
+});
+
+// Drag and drop
+uploadZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadZone.classList.add('dragover');
+});
+
+uploadZone.addEventListener('dragleave', () => {
+    uploadZone.classList.remove('dragover');
+});
+
+uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'text/plain') {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            document.getElementById('stego-input').value = event.target.result;
+            uploadZone.classList.add('file-loaded');
+        };
         reader.readAsText(file, 'UTF-8');
     }
 });
@@ -66,7 +101,7 @@ document.getElementById('hide-btn').addEventListener('click', async () => {
     btn.disabled = true;
     
     try {
-        const response = await fetch('http://localhost:5000/api/hide', {
+        const response = await fetch('/api/hide', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -83,7 +118,7 @@ document.getElementById('hide-btn').addEventListener('click', async () => {
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
             const text = await response.text();
-            throw new Error(`Server returned non-JSON response. Make sure the server is running on port 5000. Response: ${text.substring(0, 100)}`);
+            throw new Error(`Server returned non-JSON response. Make sure the server is running. Response: ${text.substring(0, 100)}`);
         }
         
         const data = await response.json();
@@ -128,7 +163,7 @@ document.getElementById('extract-btn').addEventListener('click', async () => {
     btn.disabled = true;
     
     try {
-        const response = await fetch('http://localhost:5000/api/extract', {
+        const response = await fetch('/api/extract', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -144,7 +179,7 @@ document.getElementById('extract-btn').addEventListener('click', async () => {
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
             const text = await response.text();
-            throw new Error(`Server returned non-JSON response. Make sure the server is running on port 5000. Response: ${text.substring(0, 100)}`);
+            throw new Error(`Server returned non-JSON response. Make sure the server is running. Response: ${text.substring(0, 100)}`);
         }
         
         const data = await response.json();
@@ -201,7 +236,14 @@ function downloadFile(content, filename) {
 
 function showError(elementId, message) {
     const errorBox = document.getElementById(elementId);
-    errorBox.innerHTML = `<strong>Error:</strong> ${message}`;
+    errorBox.innerHTML = `<strong>Error:</strong> ${message.replace(/\n/g, '<br>')}`;
     errorBox.style.display = 'block';
+    errorBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
+
+// Theme toggle (placeholder - can be enhanced)
+document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    // Theme toggle functionality can be added here
+    console.log('Theme toggle clicked');
+});
 
