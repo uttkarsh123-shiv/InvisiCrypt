@@ -7,30 +7,33 @@ RUN apt-get update && \
     apt-get install -y cmake g++ openssl libssl-dev && \
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-
-COPY backend/ ./backend/
-
 WORKDIR /app/backend
+
+# Copy the entire backend folder (contains CMakeLists, src/, public/, views/, index.js)
+COPY backend/ .
+
+# Build the C++ binary
 RUN cmake -S . -B build && cmake --build build
 
 # -----------------------------
-# Stage 2: Node.js Server
+# Stage 2: Run Node.js server
 # -----------------------------
 FROM node:18-slim
 
 WORKDIR /app
 
-# Copy ROOT package.json because your package.json is NOT inside backend
+# Install root-level Node dependencies
 COPY package*.json ./
-
 RUN npm install --omit=dev
 
-# copy backend folder
+# Copy backend app files (Node.js + views + public)
 COPY backend ./backend
 
-# copy built C++ binary from stage 1
-COPY --from=builder /app/backend/build ./backend/build
+# Copy compiled C++ binary produced in Stage 1
+COPY --from=builder /app/backend/build/textstego ./backend/textstego
+
+# Ensure binary is executable
+RUN chmod +x ./backend/textstego
 
 EXPOSE 3000
 
