@@ -120,7 +120,7 @@ The application includes comprehensive error handling:
 - Zero-width characters can be detected by analyzing the text
 - Always use strong, unique keys
 
-## License
+## For any Queries
+- MailID: uttkarshsingh450@gmail.com
 
-MIT
 
