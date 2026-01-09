@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -237,12 +237,82 @@ app.get('/api/health', (req, res) => {
         res.json({ 
             status: 'ok',
             binary_exists: fs.existsSync(binaryPath),
-            binary_path: binaryPath
+            binary_path: binaryPath,
+            version: '1.0.0',
+            features: [
+                'Text Steganography',
+                'Multiple Encryption Algorithms',
+                'Password Strength Analysis',
+                'Performance Analytics',
+                'Theme Support',
+                'Text Analysis Tools'
+            ]
         });
     } catch (error) {
         res.status(500).json({ 
             status: 'error',
             error: error.message
+        });
+    }
+});
+
+// Analytics endpoint
+app.get('/api/analytics', (req, res) => {
+    // This would typically come from a database
+    // For now, return sample analytics data
+    res.json({
+        totalOperations: 0,
+        hideOperations: 0,
+        extractOperations: 0,
+        averageProcessingTime: 0,
+        popularAlgorithms: {
+            caesar: 0,
+            aes: 0
+        },
+        dailyStats: []
+    });
+});
+
+// Text analysis endpoint
+app.post('/api/analyze', (req, res) => {
+    try {
+        const { text } = req.body;
+        
+        if (!text || typeof text !== 'string') {
+            return res.status(400).json({ error: 'text is required and must be a string' });
+        }
+        
+        const words = text.split(/\s+/).filter(word => word.length > 0);
+        const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+        const avgWordsPerSentence = sentences.length > 0 ? words.length / sentences.length : 0;
+        const avgCharsPerWord = words.length > 0 ? text.replace(/\s/g, '').length / words.length : 0;
+        const embeddingCapacity = Math.floor(text.length * 0.1);
+        
+        // Calculate readability score (simplified)
+        const readabilityScore = Math.max(0, Math.min(100, 
+            206.835 - (1.015 * avgWordsPerSentence) - (84.6 * (avgCharsPerWord / 4.7))
+        ));
+        
+        res.json({
+            characters: text.length,
+            words: words.length,
+            sentences: sentences.length,
+            avgWordsPerSentence: Math.round(avgWordsPerSentence * 10) / 10,
+            avgCharsPerWord: Math.round(avgCharsPerWord * 10) / 10,
+            embeddingCapacity,
+            readabilityScore: Math.round(readabilityScore),
+            recommendations: [
+                text.length < 200 ? 'Consider using longer cover text for better security' : null,
+                avgWordsPerSentence < 10 ? 'Longer sentences provide better concealment' : null,
+                embeddingCapacity < 50 ? 'This text has limited hiding capacity' : null
+            ].filter(Boolean)
+        });
+        
+    } catch (error) {
+        console.error('Analyze endpoint error:', error);
+        res.status(500).json({ 
+            error: 'Internal server error',
+            details: error.message
         });
     }
 });
