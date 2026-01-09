@@ -4,11 +4,34 @@ A text steganography tool that hides secret messages inside normal-looking text 
 
 ## Features
 
+### Core Steganography
 - **Invisible Steganography**: Uses Zero Width Space (ZWSP) and Zero Width Non-Joiner (ZWNJ) characters
-- **Encryption Support**: Caesar Cipher or AES (XOR-based) encryption before hiding
-- **Web Interface**: Modern, user-friendly web UI
+- **Multiple Encryption**: Caesar Cipher and AES (XOR-based) encryption before hiding
 - **File Support**: Download stego text and upload for extraction
 - **Robust Error Handling**: Comprehensive debugging and error messages
+
+### Enhanced Security Features
+- **Password Strength Analysis**: Real-time strength checking with visual feedback
+- **Smart Validation**: Automatic capacity checking and embedding optimization
+- **Security Recommendations**: Best practices guidance for secure steganography
+
+### Analytics & Performance
+- **Usage Statistics**: Track hide/extract operations with detailed metrics
+- **Performance Monitoring**: Processing time, efficiency, and operation history
+- **Data Export**: Export analytics as JSON or CSV for analysis
+- **Operation History**: View recent operations with timestamps and details
+
+### Advanced Tools
+- **Text Analysis**: Comprehensive text analysis with embedding capacity calculation
+- **Auto-generated Cover Text**: Sample text generation for testing
+- **Theme Support**: Dark/light themes with persistent preferences
+- **API Documentation**: Built-in API endpoint information
+
+### User Experience
+- **Modern UI**: Clean, responsive interface with smooth animations
+- **Real-time Feedback**: Live text analysis and password strength indicators
+- **Smart Features**: Capacity warnings, processing stats, and optimization tips
+- **Cross-platform**: Works on Windows, macOS, and Linux
 
 ## Architecture
 
@@ -50,19 +73,29 @@ http://localhost:3000
 ```
 
 3. **Hide a message**:
-   - Enter cover text (normal-looking text)
-   - Enter secret message
+   - Enter cover text (or use "Generate Sample" for testing)
+   - Enter secret message (with real-time capacity checking)
    - Select encryption algorithm (Caesar or AES)
-   - Enter encryption key
+   - Enter encryption key (with strength analysis)
    - Click "Hide Message"
-   - Download the stego text
+   - View processing statistics and download the stego text
 
 4. **Extract a message**:
    - Upload stego.txt file or paste stego text
    - Select the same encryption algorithm used for hiding
    - Enter the same encryption key
    - Click "Extract Message"
-   - View or download the extracted secret
+   - View processing statistics and download the extracted secret
+
+5. **Analyze text** (Tools tab):
+   - Paste any text to analyze its properties
+   - View embedding capacity, readability, and recommendations
+   - Get insights for optimal steganography
+
+6. **View analytics** (Analytics tab):
+   - Track your usage statistics and operation history
+   - Export data for external analysis
+   - Monitor performance metrics
 
 ## How It Works
 
@@ -120,7 +153,7 @@ The application includes comprehensive error handling:
 - Zero-width characters can be detected by analyzing the text
 - Always use strong, unique keys
 
-## For any Queries
-- MailID: uttkarshsingh450@gmail.com
+## License
 
+MIT
 
