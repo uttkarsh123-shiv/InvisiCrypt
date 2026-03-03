@@ -5,14 +5,23 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const PORT = 5000;
+const PORT = 3000;
+
+// Set up EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '..', 'views'));
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.text({ limit: '50mb' }));
 
-// Serve frontend
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
+// Serve static files
+app.use(express.static(path.join(__dirname, '..', 'public')));
+
+// Home route
+app.get('/', (req, res) => {
+    res.render('index', { title: 'InvisiCrypt' });
+});
 
 // Get binary path
 const getBinaryPath = () => {
@@ -29,7 +38,9 @@ const getBinaryPath = () => {
 // Hide endpoint
 app.post('/api/hide', (req, res) => {
     try {
-        const { cover_text, secret_message, algorithm, key } = req.body;
+        const { coverText, secretMessage, algorithm, key } = req.body;
+        const cover_text = coverText;
+        const secret_message = secretMessage;
         
         // Validate inputs
         if (!cover_text || typeof cover_text !== 'string') {
@@ -80,7 +91,7 @@ app.post('/api/hide', (req, res) => {
                 });
             }
             
-            res.json({ stego_text: stdout });
+            res.json({ stegoText: stdout });
         });
         
         process.on('error', (err) => {
@@ -103,7 +114,8 @@ app.post('/api/hide', (req, res) => {
 // Extract endpoint
 app.post('/api/extract', (req, res) => {
     try {
-        const { stego_text, algorithm, key } = req.body;
+        const { stegoText, algorithm, key } = req.body;
+        const stego_text = stegoText;
         
         // Validate inputs
         if (!stego_text || typeof stego_text !== 'string') {
@@ -201,7 +213,7 @@ app.post('/api/extract', (req, res) => {
                 });
             }
             
-            res.json({ secret_message: stdout });
+            res.json({ secretMessage: stdout });
         });
         
         process.on('error', (err) => {
@@ -239,7 +251,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.listen(PORT, () => {
-    console.log(`InvisiCrypt server running on http://localhost:${PORT}`);
-    console.log(`Make sure the C++ binary is built (run 'npm run build')`);
+    console.log(`\n🔐 InvisiCrypt server running on http://localhost:${PORT}`);
+    console.log(`Make sure the C++ binary is built (run 'npm run build')\n`);
 });
 
