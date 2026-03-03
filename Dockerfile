@@ -1,5 +1,5 @@
 # Build stage for C++ binary
-FROM gcc:12 as cpp-builder
+FROM gcc:12 AS cpp-builder
 
 WORKDIR /build
 
@@ -22,8 +22,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies (including devDependencies for build)
+RUN npm ci
 
 # Copy application files
 COPY backend/index.js backend/
