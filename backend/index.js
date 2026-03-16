@@ -250,8 +250,21 @@ app.get('/api/health', (req, res) => {
     }
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`\n🔐 InvisiCrypt server running on http://localhost:${PORT}`);
     console.log(`Make sure the C++ binary is built (run 'npm run build')\n`);
+
+    // Self-ping every 14 minutes to prevent Render free tier spin-down
+    const RENDER_URL = process.env.RENDER_EXTERNAL_URL;
+    if (RENDER_URL) {
+        const https = require('https');
+        setInterval(() => {
+            https.get(`${RENDER_URL}/api/health`, (res) => {
+                console.log(`[keep-alive] ping ${res.statusCode}`);
+            }).on('error', (err) => {
+                console.warn(`[keep-alive] ping failed: ${err.message}`);
+            });
+        }, 14 * 60 * 1000);
+    }
 });
 
