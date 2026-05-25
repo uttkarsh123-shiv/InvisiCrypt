@@ -4,6 +4,9 @@ project(InvisiCrypt)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# No external dependencies required.
+# Encryption is handled via Caesar cipher and XOR stream cipher (pure C++).
+
 # Source files
 set(SOURCES
     src/Stego.cpp
