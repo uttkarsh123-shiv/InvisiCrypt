@@ -110,7 +110,7 @@ body {
 .hero-left {
     padding: 48px 48px 64px 0;
     display: flex; flex-direction: column; justify-content: center;
-    border-right: 1.5px solid var(--border);
+    /* border-right: 1.5px solid var(--border); */
 }
 
 .hero-tag {
@@ -151,19 +151,11 @@ body {
 
 /* ── Hero right panel ── */
 .hero-visual {
-    background: var(--accent);
-    border-left: 1.5px solid var(--border);
+    /* background: var(--accent); */
+    /* border-left: 1.5px solid var(--border); */
     display: flex; align-items: center; justify-content: center;
     padding: 48px 40px;
     position: relative; overflow: hidden;
-}
-
-/* decorative squiggle */
-.hero-visual::after {
-    content: '~~~~~';
-    position: absolute; bottom: 24px; right: 24px;
-    font-size: 32px; color: rgba(0,0,0,0.12);
-    letter-spacing: -4px; font-weight: 900;
 }
 
 /* ── UI stack (hero cards) ── */
