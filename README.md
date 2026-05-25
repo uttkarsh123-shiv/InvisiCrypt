@@ -8,7 +8,7 @@ InvisiCrypt embeds encrypted messages inside ordinary-looking text using invisib
 
 ## How it works
 
-1. Your secret message is encrypted (Caesar Cipher or AES/XOR)
+1. Your secret message is encrypted (Caesar Cipher or XOR Stream Cipher)
 2. The encrypted bytes are converted to binary
 3. Each bit is encoded as a zero-width character:
    - `0` → Zero Width Space (`U+200B`)
@@ -25,7 +25,7 @@ InvisiCrypt embeds encrypted messages inside ordinary-looking text using invisib
 | Frontend | EJS, HTML5, CSS3, Vanilla JS |
 | Backend | Node.js + Express |
 | Core engine | C++ (compiled binary) |
-| Encryption | Caesar Cipher, AES (XOR-based) |
+| Encryption | Caesar Cipher, XOR Stream Cipher |
 | Containerization | Docker |
 
 ---
@@ -73,7 +73,7 @@ Hides a secret message inside cover text.
 {
   "coverText": "The weather today is quite pleasant...",
   "secretMessage": "Meet me at midnight.",
-  "algorithm": "aes",
+  "algorithm": "xor",
   "key": "mysecretkey"
 }
 ```
@@ -95,7 +95,7 @@ Extracts and decrypts a hidden message from stego text.
 ```json
 {
   "stegoText": "The weather today is quite pleasant...",
-  "algorithm": "aes",
+  "algorithm": "xor",
   "key": "mysecretkey"
 }
 ```
@@ -119,7 +119,7 @@ Returns server and binary status.
 
 **Caesar Cipher** — classic shift cipher. Use a numeric key (e.g. `13`). Simple, fast, good for demos.
 
-**AES (XOR)** — XOR-based stream cipher keyed with any string. Stronger protection for real use cases.
+**XOR Stream Cipher** — XOR-based stream cipher keyed with any string. Stronger protection for real use cases.
 
 ---
 
