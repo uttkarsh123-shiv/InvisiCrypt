@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# Environment variables
+.env
+
 # Build artifacts
 backend/build/
 backend/textstego

@@ -8,9 +8,9 @@
     "build": "node backend/build.js",
     "dev": "node backend/index.js"
   },
-  "devDependencies": {},
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "17.4.2",
     "ejs": "^4.0.1",
     "express": "^4.18.2"
   },
