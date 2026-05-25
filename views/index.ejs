@@ -4,45 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='30' height='30' rx='8' fill='url(%23lg)'/%3E%3Cpath d='M5 15 C8 9.5 22 9.5 25 15 C22 20.5 8 20.5 5 15Z' fill='none' stroke='white' stroke-width='1.6' stroke-linejoin='round'/%3E%3Ccircle cx='15' cy='15' r='3.8' fill='none' stroke='white' stroke-width='1.5'/%3E%3Crect x='13.2' y='14.5' width='3.6' height='2.8' rx='0.7' fill='white'/%3E%3Cpath d='M13.6 14.5 V13.2 A1.4 1.4 0 0 1 16.4 13.2 V14.5' stroke='white' stroke-width='1.3' fill='none' stroke-linecap='round'/%3E%3Cdefs%3E%3ClinearGradient id='lg' x1='0' y1='0' x2='30' y2='30' gradientUnits='userSpaceOnUse'%3E%3Cstop offset='0%25' stop-color='%236366f1'/%3E%3Cstop offset='100%25' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='32' height='32' rx='8' fill='%23c8f060'/%3E%3Crect x='0.75' y='0.75' width='30.5' height='30.5' rx='7.25' stroke='%230f0f0f' stroke-width='1.5'/%3E%3Cpath d='M7 16 C9 11 23 11 25 16 C23 21 9 21 7 16Z' fill='none' stroke='%230f0f0f' stroke-width='1.8'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='none' stroke='%230f0f0f' stroke-width='1.8'/%3E%3Crect x='14.5' y='15.5' width='3' height='2.5' rx='0.6' fill='%230f0f0f'/%3E%3Cpath d='M14.8 15.5 V14.3 A1.2 1.2 0 0 1 17.2 14.3 V15.5' stroke='%230f0f0f' stroke-width='1.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,900;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
 <nav class="navbar">
     <div class="nav-inner">
-        <div class="nav-logo">
+        <a href="/" class="nav-logo">
             <div class="nav-logo-icon">
-                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="30" height="30" rx="8" fill="url(#lg)"/>
-                    <!-- eye outline -->
-                    <path d="M5 15 C8 9.5 22 9.5 25 15 C22 20.5 8 20.5 5 15Z" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
-                    <!-- pupil ring -->
-                    <circle cx="15" cy="15" r="3.8" fill="none" stroke="white" stroke-width="1.5"/>
-                    <!-- lock body -->
-                    <rect x="13.2" y="14.5" width="3.6" height="2.8" rx="0.7" fill="white"/>
-                    <!-- lock shackle -->
-                    <path d="M13.6 14.5 V13.2 A1.4 1.4 0 0 1 16.4 13.2 V14.5" stroke="white" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-                    <defs>
-                        <linearGradient id="lg" x1="0" y1="0" x2="30" y2="30" gradientUnits="userSpaceOnUse">
-                            <stop offset="0%" stop-color="#6366f1"/>
-                            <stop offset="100%" stop-color="#8b5cf6"/>
-                        </linearGradient>
-                    </defs>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                    <circle cx="12" cy="12" r="3"/>
                 </svg>
             </div>
             <span>InvisiCrypt</span>
-        </div>
+        </a>
         <div class="nav-links">
             <a href="#features" class="nav-link">Features</a>
             <a href="#how-it-works" class="nav-link">How it works</a>
-            <a href="#tool" class="nav-link">Try it</a>
+            <a href="#tool" class="nav-link">Tool</a>
         </div>
         <div class="nav-actions">
-            <button class="nav-pill active" data-view="hide">Hide Message</button>
+            <button class="nav-pill active" data-view="hide">Hide</button>
             <button class="nav-pill" data-view="extract">Extract</button>
         </div>
     </div>
@@ -53,56 +40,59 @@
     <!-- Hero -->
     <section class="hero">
         <div class="hero-left">
-            <div class="hero-badge">
-                <span class="hero-badge-dot"></span>
-                Zero-width Unicode steganography
-            </div>
-            <h1 class="hero-title">Hide secrets<br><span class="gradient-text">in plain sight.</span></h1>
-            <p class="hero-sub">Encrypt your message, embed it invisibly inside any text, and share it anywhere. Only those with the key can ever read it.</p>
+                <h1 class="hero-title">Hide secrets<br>in plain sight.</h1>
+            <p class="hero-sub">Encrypt your message and embed it invisibly inside any text using zero-width Unicode characters. Only someone with the right key can ever read it.</p>
             <div class="hero-cta">
-                <a href="#tool" class="btn btn-primary">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    Start hiding
-                </a>
+                <a href="#tool" class="btn btn-primary">Try the tool</a>
                 <a href="#how-it-works" class="btn btn-ghost">How it works</a>
             </div>
-            <div class="hero-stats">
-                <div class="stat"><span class="stat-val">2</span><span class="stat-label">Encryption modes</span></div>
-                <div class="stat"><span class="stat-val">0</span><span class="stat-label">Visible traces</span></div>
-                <div class="stat"><span class="stat-val">C++</span><span class="stat-label">Core engine</span></div>
+            <div class="hero-meta">
+                <span>C++ engine</span>
+                <span class="hero-meta-sep">·</span>
+                <span>Caesar &amp; XOR ciphers</span>
+                <span class="hero-meta-sep">·</span>
+                <span>0 visible traces</span>
             </div>
         </div>
         <div class="hero-visual">
-            <div class="hero-card">
-                <div class="hero-card-header">
-                    <div class="hc-dots"><span class="hc-dot"></span><span class="hc-dot"></span><span class="hc-dot"></span></div>
-                    <span class="hc-title">invisi-crypt — hide message</span>
+            <div class="ui-stack">
+                <!-- top small card -->
+                <div class="ui-float ui-float--top">
+                    <div class="ui-float-label">cover text</div>
+                    <div class="ui-float-val">The weather today is quite pleasant. I went for a walk this morning...</div>
                 </div>
-                <div class="hero-card-body">
-                    <div>
-                        <div class="hc-label">Cover Text</div>
-                        <div class="hc-field">The weather today is quite pleasant. I went for a walk in the park this morning...</div>
+
+                <!-- main card -->
+                <div class="ui-main-card">
+                    <div class="ui-main-header">
+                        <span class="ui-main-title">invisi-crypt</span>
+                        <span class="ui-main-mode">hide</span>
                     </div>
-                    <div>
-                        <div class="hc-label">Secret Message</div>
-                        <div class="hc-field">Meet me at midnight.</div>
-                    </div>
-                    <div class="hc-row">
-                        <div>
-                            <div class="hc-label">Encryption</div>
-                            <div class="hc-field">XOR Stream Cipher</div>
+                    <div class="ui-main-body">
+                        <div class="ui-field">
+                            <div class="ui-field-label">secret message</div>
+                            <div class="ui-field-val">Meet me at midnight.</div>
                         </div>
-                        <div>
-                            <div class="hc-label">Key</div>
-                            <div class="hc-field">••••••••</div>
+                        <div class="ui-field-row">
+                            <div class="ui-field">
+                                <div class="ui-field-label">cipher</div>
+                                <div class="ui-field-val">xor</div>
+                            </div>
+                            <div class="ui-field">
+                                <div class="ui-field-label">key</div>
+                                <div class="ui-field-val">••••••••</div>
+                            </div>
+                        </div>
+                        <div class="ui-action-btn">Hide Message</div>
+                        <div class="ui-field">
+                            <div class="ui-field-label">output</div>
+                            <div class="ui-field-val mono">The weather today is quite pleasant.&#8203;&#8204;&#8203; I went...</div>
+                        </div>
+                        <div class="ui-status">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            message hidden — 47 zero-width chars embedded
                         </div>
                     </div>
-                    <div class="hc-btn">Hide Message</div>
-                    <div>
-                        <div class="hc-label">Output</div>
-                        <div class="hc-field mono">The weather today is quite pleasant.&#8203;&#8204;&#8205; I went for a walk...</div>
-                    </div>
-                    <div><span class="hc-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Message hidden successfully</span></div>
                 </div>
             </div>
         </div>
@@ -110,258 +100,259 @@
 
     <!-- Features -->
     <section id="features" class="section">
-        <span class="section-eyebrow">Features</span>
-        <h2 class="section-title">Everything you need to stay invisible</h2>
+        <div class="section-header">
+            <span class="section-label">Features</span>
+            <h2 class="section-title">Everything you need<br>to stay invisible</h2>
+        </div>
         <div class="features-grid">
-            <div class="feat-card feat-card--accent">
+            <div class="feat-card">
                 <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-                <h3>Dual Encryption</h3>
-                <p>Caesar Cipher for simplicity or XOR Stream Cipher for stronger protection. Your message is encrypted before it's ever hidden.</p>
+                <h3>Two encryption modes</h3>
+                <p>Caesar cipher for demos, XOR stream cipher for stronger protection. Both encrypt before hiding.</p>
             </div>
             <div class="feat-card">
                 <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="1" y1="1" x2="23" y2="23"/></svg></div>
-                <h3>Truly Invisible</h3>
-                <p>Zero-width Unicode characters carry your data — completely invisible to the human eye and most text editors.</p>
-            </div>
-            <div class="feat-card">
-                <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
-                <h3>Share Anywhere</h3>
-                <p>Output looks like normal text. Paste it in emails, chats, or social media — no one will suspect a thing.</p>
+                <h3>Zero visible traces</h3>
+                <p>Zero-width Unicode characters (U+200B, U+200C) carry the data — invisible to the eye and most editors.</p>
             </div>
             <div class="feat-card">
                 <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-                <h3>C++ Performance</h3>
-                <p>The steganography engine is written in C++ for blazing-fast encoding and decoding, even on large texts.</p>
+                <h3>C++ core engine</h3>
+                <p>Steganography and encryption compiled to a native binary. Node.js handles the API layer only.</p>
+            </div>
+            <div class="feat-card">
+                <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></div>
+                <h3>Paste anywhere</h3>
+                <p>Output is plain text. Works in emails, Slack, docs — anywhere that preserves Unicode.</p>
             </div>
             <div class="feat-card">
                 <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-                <h3>File Support</h3>
-                <p>Upload .txt files as cover text or stego input. Download results directly — no copy-paste required.</p>
+                <h3>File upload &amp; download</h3>
+                <p>Load cover text from a .txt file. Download the stego output directly.</p>
             </div>
             <div class="feat-card">
                 <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-                <h3>Key-locked</h3>
-                <p>Without the correct key, the hidden message cannot be decrypted. Your secrets stay yours.</p>
+                <h3>Key-locked extraction</h3>
+                <p>Without the correct key and cipher, extraction returns garbage. Your message stays private.</p>
             </div>
         </div>
     </section>
 
     <!-- How it works -->
-    <section id="how-it-works" class="section">
-        <span class="section-eyebrow">How it works</span>
-        <h2 class="section-title">Four steps to invisible communication</h2>
+    <section id="how-it-works" class="section" style="padding-top:0;">
+        <div class="section-header">
+            <span class="section-label">How it works</span>
+            <h2 class="section-title">Four steps</h2>
+        </div>
         <div class="steps-grid">
             <div class="step-item">
-                <div class="step-circle">01</div>
+                <div class="step-num">01</div>
                 <h3>Write cover text</h3>
-                <p>Provide any innocent-looking text. This is what the world will see.</p>
+                <p>Any innocent-looking text. This is what everyone sees.</p>
             </div>
             <div class="step-item">
-                <div class="step-circle">02</div>
-                <h3>Enter secret message</h3>
-                <p>Type the message to hide. Pick your encryption algorithm and key.</p>
+                <div class="step-num">02</div>
+                <h3>Enter secret + key</h3>
+                <p>Type the message to hide, pick a cipher, and set a key.</p>
             </div>
             <div class="step-item">
-                <div class="step-circle">03</div>
-                <h3>Generate stego text</h3>
-                <p>The encrypted message is embedded as invisible zero-width characters.</p>
+                <div class="step-num">03</div>
+                <h3>Embed</h3>
+                <p>The C++ engine encrypts and weaves it in as zero-width characters.</p>
             </div>
             <div class="step-item">
-                <div class="step-circle">04</div>
+                <div class="step-num">04</div>
                 <h3>Share &amp; extract</h3>
-                <p>Send it anywhere. The recipient uses InvisiCrypt + the key to reveal it.</p>
+                <p>Send the output anywhere. Use Extract + the same key to reveal it.</p>
             </div>
         </div>
     </section>
 
     <!-- Tool -->
-    <section id="tool" class="section">
-        <span class="section-eyebrow">Try it now</span>
-        <h2 class="section-title">Your message, your rules</h2>
-
-        <div class="tool-tabs">
-            <button class="tool-tab active" data-view="hide">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                Hide Message
-            </button>
-            <button class="tool-tab" data-view="extract">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                Extract Message
-            </button>
-        </div>
-
-        <div class="tool-wrapper">
-            <div class="tool-main">
-
-                <!-- Hide View -->
-                <div id="hide-view" class="view active">
-                    <form id="hide-form" class="form-card">
-                        <div class="form-group">
-                            <label for="cover-text">Cover Text</label>
-                            <textarea id="cover-text" name="coverText" rows="4" placeholder="Enter innocent-looking text here..."></textarea>
-                            <div class="file-upload">
-                                <input type="file" id="cover-file" accept=".txt">
-                                <label for="cover-file" class="file-label">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                    Upload .txt file
-                                </label>
-                            </div>
-                            <div class="char-info">
-                                <span class="hint">
-                                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                                    Capacity: <strong id="max-capacity">0</strong> characters available
-                                </span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="secret-message">Secret Message</label>
-                            <textarea id="secret-message" name="secretMessage" rows="3" placeholder="Enter your secret message..." required></textarea>
-                            <div class="secret-char-info">
-                                <span class="hint">Characters: <strong id="secret-char-count">0</strong></span>
-                                <span class="hint" id="capacity-status"></span>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="hide-algorithm">Encryption</label>
-                                <select id="hide-algorithm" name="algorithm" required>
-                                    <option value="caesar">Caesar Cipher</option>
-                                    <option value="xor">XOR Stream Cipher</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="hide-key">Key</label>
-                                <input type="text" id="hide-key" name="key" placeholder="Enter encryption key" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                            Hide Message
-                        </button>
-                    </form>
-                    <div id="hide-result" class="result-card" style="display:none;">
-                        <div class="result-header">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                            <h3>Stego Text Generated</h3>
-                        </div>
-                        <textarea id="stego-output" rows="5" readonly></textarea>
-                        <div class="button-group">
-                            <button onclick="copyToClipboard('stego-output')" class="btn btn-secondary">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                                Copy
-                            </button>
-                            <button onclick="downloadText('stego-output', 'stego.txt')" class="btn btn-secondary">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                Download
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Extract View -->
-                <div id="extract-view" class="view">
-                    <form id="extract-form" class="form-card">
-                        <div class="form-group">
-                            <label for="stego-text">Stego Text</label>
-                            <textarea id="stego-text" name="stegoText" rows="5" placeholder="Paste stego text here..."></textarea>
-                            <div class="file-upload">
-                                <input type="file" id="stego-file" accept=".txt">
-                                <label for="stego-file" class="file-label">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                    Upload .txt file
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="extract-algorithm">Encryption</label>
-                                <select id="extract-algorithm" name="algorithm" required>
-                                    <option value="caesar">Caesar Cipher</option>
-                                    <option value="xor">XOR Stream Cipher</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="extract-key">Key</label>
-                                <input type="text" id="extract-key" name="key" placeholder="Enter encryption key" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                            Extract Message
-                        </button>
-                    </form>
-                    <div id="extract-result" class="result-card" style="display:none;">
-                        <div class="result-header">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                            <h3>Secret Message Extracted</h3>
-                        </div>
-                        <textarea id="extracted-output" rows="5" readonly></textarea>
-                        <div class="button-group">
-                            <button onclick="copyToClipboard('extracted-output')" class="btn btn-secondary">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                                Copy
-                            </button>
-                            <button onclick="downloadText('extracted-output', 'secret.txt')" class="btn btn-secondary">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                Download
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="error-box" class="error-box" style="display:none;"></div>
+    <div class="tool-section-bg">
+        <section id="tool" class="section">
+            <div class="section-header">
+                <span class="section-label">Tool</span>
+                <h2 class="section-title">Hide or extract a message</h2>
             </div>
 
-            <!-- Info panel -->
-            <div class="tool-info">
-                <div class="info-card">
-                    <h4>Quick guide</h4>
-                    <div class="info-steps">
-                        <div class="info-step"><div class="info-step-num">1</div><p>Paste or upload your cover text — the innocent text that will carry the secret.</p></div>
-                        <div class="info-step"><div class="info-step-num">2</div><p>Type your secret message and choose an encryption algorithm + key.</p></div>
-                        <div class="info-step"><div class="info-step-num">3</div><p>Click Hide Message. Copy or download the stego output and share it freely.</p></div>
-                        <div class="info-step"><div class="info-step-num">4</div><p>To reveal, switch to Extract, paste the stego text, and enter the same key.</p></div>
-                    </div>
-                </div>
-                <div class="info-card">
-                    <h4>Encryption modes</h4>
-                    <div class="algo-list">
-                        <div class="algo-item">
-                            <span class="algo-badge caesar">Caesar</span>
-                            <p>Classic shift cipher. Use a numeric key (e.g. 13). Simple and fast.</p>
+            <div class="tool-tabs">
+                <button class="tool-tab active" data-view="hide">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Hide Message
+                </button>
+                <button class="tool-tab" data-view="extract">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    Extract Message
+                </button>
+            </div>
+
+            <div class="tool-wrapper">
+                <div class="tool-main">
+
+                    <!-- Hide View -->
+                    <div id="hide-view" class="view active">
+                        <form id="hide-form" class="form-card">
+                            <div class="form-group">
+                                <label for="cover-text">Cover Text</label>
+                                <textarea id="cover-text" name="coverText" rows="4" placeholder="Paste the innocent-looking text here..."></textarea>
+                                <div class="file-upload">
+                                    <input type="file" id="cover-file" accept=".txt">
+                                    <label for="cover-file" class="file-label">
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                        Upload .txt
+                                    </label>
+                                </div>
+                                <div class="char-info">capacity: <strong id="max-capacity">0</strong> chars</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="secret-message">Secret Message</label>
+                                <textarea id="secret-message" name="secretMessage" rows="3" placeholder="The message to hide..." required></textarea>
+                                <div class="secret-char-info">
+                                    <span class="hint"><strong id="secret-char-count">0</strong> chars</span>
+                                    <span class="hint" id="capacity-status"></span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="hide-algorithm">Cipher</label>
+                                    <select id="hide-algorithm" name="algorithm" required>
+                                        <option value="caesar">Caesar Cipher</option>
+                                        <option value="xor">XOR Stream Cipher</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hide-key">Key</label>
+                                    <input type="text" id="hide-key" name="key" placeholder="Encryption key" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                Hide Message
+                            </button>
+                        </form>
+                        <div id="hide-result" class="result-card" style="display:none;">
+                            <div class="result-header">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <h3>Stego text generated</h3>
+                            </div>
+                            <textarea id="stego-output" rows="5" readonly></textarea>
+                            <div class="button-group">
+                                <button onclick="copyToClipboard('stego-output')" class="btn btn-secondary">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                    Copy
+                                </button>
+                                <button onclick="downloadText('stego-output', 'stego.txt')" class="btn btn-secondary">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    Download
+                                </button>
+                            </div>
                         </div>
-                        <div class="algo-item">
-                            <span class="algo-badge aes">XOR</span>
-                            <p>XOR stream cipher. Use any string as key. Stronger protection than Caesar.</p>
+                    </div>
+
+                    <!-- Extract View -->
+                    <div id="extract-view" class="view">
+                        <form id="extract-form" class="form-card">
+                            <div class="form-group">
+                                <label for="stego-text">Stego Text</label>
+                                <textarea id="stego-text" name="stegoText" rows="5" placeholder="Paste the stego text here..."></textarea>
+                                <div class="file-upload">
+                                    <input type="file" id="stego-file" accept=".txt">
+                                    <label for="stego-file" class="file-label">
+                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                        Upload .txt
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="extract-algorithm">Cipher</label>
+                                    <select id="extract-algorithm" name="algorithm" required>
+                                        <option value="caesar">Caesar Cipher</option>
+                                        <option value="xor">XOR Stream Cipher</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="extract-key">Key</label>
+                                    <input type="text" id="extract-key" name="key" placeholder="Encryption key" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                                Extract Message
+                            </button>
+                        </form>
+                        <div id="extract-result" class="result-card" style="display:none;">
+                            <div class="result-header">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                                <h3>Secret message extracted</h3>
+                            </div>
+                            <textarea id="extracted-output" rows="5" readonly></textarea>
+                            <div class="button-group">
+                                <button onclick="copyToClipboard('extracted-output')" class="btn btn-secondary">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                    Copy
+                                </button>
+                                <button onclick="downloadText('extracted-output', 'secret.txt')" class="btn btn-secondary">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="error-box" class="error-box" style="display:none;"></div>
+                </div>
+
+                <!-- Info panel -->
+                <div class="tool-info">
+                    <div class="info-card">
+                        <h4>Quick guide</h4>
+                        <div class="info-steps">
+                            <div class="info-step"><div class="info-step-num">1</div><p>Paste cover text — the innocent text that carries the secret.</p></div>
+                            <div class="info-step"><div class="info-step-num">2</div><p>Enter your secret message, pick a cipher, and set a key.</p></div>
+                            <div class="info-step"><div class="info-step-num">3</div><p>Click Hide. Copy or download the output and share it.</p></div>
+                            <div class="info-step"><div class="info-step-num">4</div><p>To reveal: paste stego text in Extract, use the same cipher + key.</p></div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <h4>Ciphers</h4>
+                        <div class="algo-list">
+                            <div class="algo-item">
+                                <span class="algo-badge">caesar</span>
+                                <p>Byte shift cipher. Use a number as key (e.g. 13). Simple, good for demos.</p>
+                            </div>
+                            <div class="algo-item">
+                                <span class="algo-badge">xor</span>
+                                <p>XOR stream cipher. Use any string as key. Stronger than Caesar.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <h4>Notes</h4>
+                        <div class="info-steps">
+                            <div class="info-step"><div class="info-step-num">!</div><p>Some platforms strip zero-width chars. Test before relying on it.</p></div>
+                            <div class="info-step"><div class="info-step-num">!</div><p>Save files as UTF-8 to preserve hidden data.</p></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 
     <footer class="footer">
         <div class="footer-inner">
             <div class="footer-logo">
-                <div class="nav-logo-icon" style="width:26px;height:26px;">
-                    <svg width="26" height="26" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="30" height="30" rx="8" fill="url(#lgf)"/>
-                        <path d="M5 15 C8 9.5 22 9.5 25 15 C22 20.5 8 20.5 5 15Z" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
-                        <circle cx="15" cy="15" r="3.8" fill="none" stroke="white" stroke-width="1.5"/>
-                        <rect x="13.2" y="14.5" width="3.6" height="2.8" rx="0.7" fill="white"/>
-                        <path d="M13.6 14.5 V13.2 A1.4 1.4 0 0 1 16.4 13.2 V14.5" stroke="white" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-                        <defs>
-                            <linearGradient id="lgf" x1="0" y1="0" x2="30" y2="30" gradientUnits="userSpaceOnUse">
-                                <stop offset="0%" stop-color="#6366f1"/>
-                                <stop offset="100%" stop-color="#8b5cf6"/>
-                            </linearGradient>
-                        </defs>
-                    </svg>
-                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>
                 InvisiCrypt
             </div>
-            <p class="footer-copy">Steganography meets encryption — your secrets, invisible to the world.</p>
-            <p class="footer-version">v1.0.0</p>
+            <p class="footer-copy">Text steganography — C++ engine, Node.js API.</p>
+            <div class="footer-links">
+                <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+            </div>
         </div>
     </footer>
 
