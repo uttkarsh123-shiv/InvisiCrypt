@@ -13,8 +13,7 @@
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "ejs": "^4.0.1",
-    "express": "^4.18.2",
-    "multer": "^1.4.5-lts.1"
+    "express": "^4.18.2"
   },
   "keywords": [
     "steganography",
