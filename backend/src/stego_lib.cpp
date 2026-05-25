@@ -27,8 +27,8 @@ std::string hide_message(const std::string& cover_text,
                 shift = shift % 256;
             }
             encrypted_bytes = Encryptor::caesar_encrypt(secret_bytes, shift);
-        } else if (algorithm == "aes") {
-            encrypted_bytes = Encryptor::aes_encrypt(secret_bytes, key);
+        } else if (algorithm == "xor") {
+            encrypted_bytes = Encryptor::xor_encrypt(secret_bytes, key);
         } else {
             throw std::runtime_error("Unknown algorithm: " + algorithm);
         }
@@ -74,9 +74,9 @@ std::string extract_message(const std::string& stego_text,
             }
             std::cerr << "DEBUG: Caesar shift: " << shift << std::endl;
             decrypted_bytes = Encryptor::caesar_decrypt(encrypted_bytes, shift);
-        } else if (algorithm == "aes") {
-            std::cerr << "DEBUG: Using AES decryption" << std::endl;
-            decrypted_bytes = Encryptor::aes_decrypt(encrypted_bytes, key);
+        } else if (algorithm == "xor") {
+            std::cerr << "DEBUG: Using XOR decryption" << std::endl;
+            decrypted_bytes = Encryptor::xor_decrypt(encrypted_bytes, key);
         } else {
             throw std::runtime_error("Unknown algorithm: " + algorithm);
         }

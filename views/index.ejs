@@ -90,7 +90,7 @@
                     <div class="hc-row">
                         <div>
                             <div class="hc-label">Encryption</div>
-                            <div class="hc-field">AES (XOR)</div>
+                            <div class="hc-field">XOR Stream Cipher</div>
                         </div>
                         <div>
                             <div class="hc-label">Key</div>
@@ -116,7 +116,7 @@
             <div class="feat-card feat-card--accent">
                 <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
                 <h3>Dual Encryption</h3>
-                <p>Caesar Cipher for simplicity or AES (XOR) for stronger protection. Your message is encrypted before it's ever hidden.</p>
+                <p>Caesar Cipher for simplicity or XOR Stream Cipher for stronger protection. Your message is encrypted before it's ever hidden.</p>
             </div>
             <div class="feat-card">
                 <div class="feat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/><line x1="1" y1="1" x2="23" y2="23"/></svg></div>
@@ -226,7 +226,7 @@
                                 <label for="hide-algorithm">Encryption</label>
                                 <select id="hide-algorithm" name="algorithm" required>
                                     <option value="caesar">Caesar Cipher</option>
-                                    <option value="aes">AES (XOR)</option>
+                                    <option value="xor">XOR Stream Cipher</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -277,7 +277,7 @@
                                 <label for="extract-algorithm">Encryption</label>
                                 <select id="extract-algorithm" name="algorithm" required>
                                     <option value="caesar">Caesar Cipher</option>
-                                    <option value="aes">AES (XOR)</option>
+                                    <option value="xor">XOR Stream Cipher</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -331,8 +331,8 @@
                             <p>Classic shift cipher. Use a numeric key (e.g. 13). Simple and fast.</p>
                         </div>
                         <div class="algo-item">
-                            <span class="algo-badge aes">AES XOR</span>
-                            <p>XOR-based stream cipher. Use any string as key. Stronger protection.</p>
+                            <span class="algo-badge aes">XOR</span>
+                            <p>XOR stream cipher. Use any string as key. Stronger protection than Caesar.</p>
                         </div>
                     </div>
                 </div>

@@ -49,8 +49,8 @@ app.post('/api/hide', (req, res) => {
         if (!secret_message || typeof secret_message !== 'string') {
             return res.status(400).json({ error: 'secret_message is required and must be a string' });
         }
-        if (!algorithm || !['caesar', 'aes'].includes(algorithm)) {
-            return res.status(400).json({ error: 'algorithm must be "caesar" or "aes"' });
+        if (!algorithm || !['caesar', 'xor'].includes(algorithm)) {
+            return res.status(400).json({ error: 'algorithm must be "caesar" or "xor"' });
         }
         if (!key || typeof key !== 'string') {
             return res.status(400).json({ error: 'key is required and must be a string' });
@@ -121,8 +121,8 @@ app.post('/api/extract', (req, res) => {
         if (!stego_text || typeof stego_text !== 'string') {
             return res.status(400).json({ error: 'stego_text is required and must be a string' });
         }
-        if (!algorithm || !['caesar', 'aes'].includes(algorithm)) {
-            return res.status(400).json({ error: 'algorithm must be "caesar" or "aes"' });
+        if (!algorithm || !['caesar', 'xor'].includes(algorithm)) {
+            return res.status(400).json({ error: 'algorithm must be "caesar" or "xor"' });
         }
         if (!key || typeof key !== 'string') {
             return res.status(400).json({ error: 'key is required and must be a string' });
