@@ -29,8 +29,8 @@
             <a href="#tool" class="nav-link">Tool</a>
         </div>
         <div class="nav-actions">
-            <button class="nav-pill active" data-view="hide">Hide</button>
-            <button class="nav-pill" data-view="extract">Extract</button>
+            <button class="nav-pill active" data-view="image-hide">Hide</button>
+            <button class="nav-pill" data-view="image-extract">Extract</button>
         </div>
     </div>
 </nav>
@@ -41,17 +41,17 @@
     <section class="hero">
         <div class="hero-left">
                 <h1 class="hero-title">Hide secrets<br>in plain sight.</h1>
-            <p class="hero-sub">Encrypt your message and embed it invisibly inside any text using zero-width Unicode characters. Only someone with the right key can ever read it.</p>
+            <p class="hero-sub">Encrypt your message and embed it invisibly — inside text using zero-width Unicode characters, or inside images using pixel LSB manipulation. Only someone with the right key can ever read it.</p>
             <div class="hero-cta">
                 <a href="#tool" class="btn btn-primary">Try the tool</a>
                 <a href="#how-it-works" class="btn btn-ghost">How it works</a>
             </div>
             <div class="hero-meta">
-                <span>C++ engine</span>
+                <span>C++ + OpenCV</span>
+                <span class="hero-meta-sep">·</span>
+                <span>LSB image steganography</span>
                 <span class="hero-meta-sep">·</span>
                 <span>Caesar &amp; XOR ciphers</span>
-                <span class="hero-meta-sep">·</span>
-                <span>0 visible traces</span>
             </div>
         </div>
         <div class="hero-visual">
@@ -176,167 +176,167 @@
                 <h2 class="section-title">Hide or extract a message</h2>
             </div>
 
-            <div class="tool-tabs">
-                <button class="tool-tab active" data-view="hide">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    Hide Message
+            <div class="mode-tabs">
+                <button class="mode-tab active" data-mode="text">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+                    Text
                 </button>
-                <button class="tool-tab" data-view="extract">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                    Extract Message
+                <button class="mode-tab" data-mode="image">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    Image
                 </button>
             </div>
 
-            <div class="tool-wrapper">
-                <div class="tool-main">
-
-                    <!-- Hide View -->
-                    <div id="hide-view" class="view active">
-                        <form id="hide-form" class="form-card">
-                            <div class="form-group">
-                                <label for="cover-text">Cover Text</label>
-                                <textarea id="cover-text" name="coverText" rows="4" placeholder="Paste the innocent-looking text here..."></textarea>
-                                <div class="file-upload">
-                                    <input type="file" id="cover-file" accept=".txt">
-                                    <label for="cover-file" class="file-label">
-                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                        Upload .txt
-                                    </label>
-                                </div>
-                                <div class="char-info">capacity: <strong id="max-capacity">0</strong> chars</div>
-                            </div>
-                            <div class="form-group">
-                                <label for="secret-message">Secret Message</label>
-                                <textarea id="secret-message" name="secretMessage" rows="3" placeholder="The message to hide..." required></textarea>
-                                <div class="secret-char-info">
-                                    <span class="hint"><strong id="secret-char-count">0</strong> chars</span>
-                                    <span class="hint" id="capacity-status"></span>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="hide-algorithm">Cipher</label>
-                                    <select id="hide-algorithm" name="algorithm" required>
-                                        <option value="caesar">Caesar Cipher</option>
-                                        <option value="xor">XOR Stream Cipher</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="hide-key">Key</label>
-                                    <input type="text" id="hide-key" name="key" placeholder="Encryption key" required>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                                Hide Message
-                            </button>
-                        </form>
-                        <div id="hide-result" class="result-card" style="display:none;">
-                            <div class="result-header">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                <h3>Stego text generated</h3>
-                            </div>
-                            <textarea id="stego-output" rows="5" readonly></textarea>
-                            <div class="button-group">
-                                <button onclick="copyToClipboard('stego-output')" class="btn btn-secondary">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                                    Copy
-                                </button>
-                                <button onclick="downloadText('stego-output', 'stego.txt')" class="btn btn-secondary">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                    Download
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Extract View -->
-                    <div id="extract-view" class="view">
-                        <form id="extract-form" class="form-card">
-                            <div class="form-group">
-                                <label for="stego-text">Stego Text</label>
-                                <textarea id="stego-text" name="stegoText" rows="5" placeholder="Paste the stego text here..."></textarea>
-                                <div class="file-upload">
-                                    <input type="file" id="stego-file" accept=".txt">
-                                    <label for="stego-file" class="file-label">
-                                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                                        Upload .txt
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="extract-algorithm">Cipher</label>
-                                    <select id="extract-algorithm" name="algorithm" required>
-                                        <option value="caesar">Caesar Cipher</option>
-                                        <option value="xor">XOR Stream Cipher</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="extract-key">Key</label>
-                                    <input type="text" id="extract-key" name="key" placeholder="Encryption key" required>
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                                Extract Message
-                            </button>
-                        </form>
-                        <div id="extract-result" class="result-card" style="display:none;">
-                            <div class="result-header">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                                <h3>Secret message extracted</h3>
-                            </div>
-                            <textarea id="extracted-output" rows="5" readonly></textarea>
-                            <div class="button-group">
-                                <button onclick="copyToClipboard('extracted-output')" class="btn btn-secondary">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                                    Copy
-                                </button>
-                                <button onclick="downloadText('extracted-output', 'secret.txt')" class="btn btn-secondary">
-                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                                    Download
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="error-box" class="error-box" style="display:none;"></div>
+            <!-- Text mode -->
+            <div id="text-mode" class="mode-panel active">
+                <div class="tool-tabs">
+                    <button class="tool-tab active" data-view="text-hide">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        Hide in Text
+                    </button>
+                    <button class="tool-tab" data-view="text-extract">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        Extract from Text
+                    </button>
                 </div>
-
-                <!-- Info panel -->
-                <div class="tool-info">
-                    <div class="info-card">
-                        <h4>Quick guide</h4>
-                        <div class="info-steps">
-                            <div class="info-step"><div class="info-step-num">1</div><p>Paste cover text — the innocent text that carries the secret.</p></div>
-                            <div class="info-step"><div class="info-step-num">2</div><p>Enter your secret message, pick a cipher, and set a key.</p></div>
-                            <div class="info-step"><div class="info-step-num">3</div><p>Click Hide. Copy or download the output and share it.</p></div>
-                            <div class="info-step"><div class="info-step-num">4</div><p>To reveal: paste stego text in Extract, use the same cipher + key.</p></div>
-                        </div>
-                    </div>
-                    <div class="info-card">
-                        <h4>Ciphers</h4>
-                        <div class="algo-list">
-                            <div class="algo-item">
-                                <span class="algo-badge">caesar</span>
-                                <p>Byte shift cipher. Use a number as key (e.g. 13). Simple, good for demos.</p>
+                <div class="tool-wrapper">
+                    <div class="tool-main">
+                        <div id="text-hide-view" class="view active">
+                            <form id="hide-form" class="form-card">
+                                <div class="form-group">
+                                    <label for="cover-text">Cover Text</label>
+                                    <textarea id="cover-text" rows="4" placeholder="Paste the innocent-looking text here..."></textarea>
+                                    <div class="file-upload"><input type="file" id="cover-file" accept=".txt"><label for="cover-file" class="file-label"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload .txt</label></div>
+                                    <div class="char-info">capacity: <strong id="max-capacity">0</strong> chars</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="secret-message">Secret Message</label>
+                                    <textarea id="secret-message" rows="3" placeholder="The message to hide..." required></textarea>
+                                    <div class="secret-char-info"><span class="hint"><strong id="secret-char-count">0</strong> chars</span><span class="hint" id="capacity-status"></span></div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group"><label for="hide-algorithm">Cipher</label><select id="hide-algorithm" required><option value="caesar">Caesar Cipher</option><option value="xor">XOR Stream Cipher</option></select></div>
+                                    <div class="form-group"><label for="hide-key">Key</label><input type="text" id="hide-key" placeholder="Encryption key" required></div>
+                                </div>
+                                <button type="submit" class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Hide Message</button>
+                            </form>
+                            <div id="hide-result" class="result-card" style="display:none;">
+                                <div class="result-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><h3>Stego text generated</h3></div>
+                                <textarea id="stego-output" rows="5" readonly></textarea>
+                                <div class="button-group">
+                                    <button onclick="copyToClipboard('stego-output')" class="btn btn-secondary"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button>
+                                    <button onclick="downloadText('stego-output', 'stego.txt')" class="btn btn-secondary"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+                                </div>
                             </div>
-                            <div class="algo-item">
-                                <span class="algo-badge">xor</span>
-                                <p>XOR stream cipher. Use any string as key. Stronger than Caesar.</p>
+                        </div>
+                        <div id="text-extract-view" class="view">
+                            <form id="extract-form" class="form-card">
+                                <div class="form-group">
+                                    <label for="stego-text">Stego Text</label>
+                                    <textarea id="stego-text" rows="5" placeholder="Paste the stego text here..."></textarea>
+                                    <div class="file-upload"><input type="file" id="stego-file" accept=".txt"><label for="stego-file" class="file-label"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload .txt</label></div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group"><label for="extract-algorithm">Cipher</label><select id="extract-algorithm" required><option value="caesar">Caesar Cipher</option><option value="xor">XOR Stream Cipher</option></select></div>
+                                    <div class="form-group"><label for="extract-key">Key</label><input type="text" id="extract-key" placeholder="Encryption key" required></div>
+                                </div>
+                                <button type="submit" class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Extract Message</button>
+                            </form>
+                            <div id="extract-result" class="result-card" style="display:none;">
+                                <div class="result-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><h3>Secret message extracted</h3></div>
+                                <textarea id="extracted-output" rows="5" readonly></textarea>
+                                <div class="button-group">
+                                    <button onclick="copyToClipboard('extracted-output')" class="btn btn-secondary"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button>
+                                    <button onclick="downloadText('extracted-output', 'secret.txt')" class="btn btn-secondary"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>
+                                </div>
                             </div>
                         </div>
+                        <div id="error-box" class="error-box" style="display:none;"></div>
                     </div>
-                    <div class="info-card">
-                        <h4>Notes</h4>
-                        <div class="info-steps">
-                            <div class="info-step"><div class="info-step-num">!</div><p>Some platforms strip zero-width chars. Test before relying on it.</p></div>
-                            <div class="info-step"><div class="info-step-num">!</div><p>Save files as UTF-8 to preserve hidden data.</p></div>
-                        </div>
+                    <div class="tool-info">
+                        <div class="info-card"><h4>Text mode</h4><div class="info-steps"><div class="info-step"><div class="info-step-num">1</div><p>Paste cover text.</p></div><div class="info-step"><div class="info-step-num">2</div><p>Enter message, pick cipher + key.</p></div><div class="info-step"><div class="info-step-num">3</div><p>Copy or download the stego output.</p></div><div class="info-step"><div class="info-step-num">!</div><p>Some platforms strip zero-width chars. Use Image mode for reliable delivery.</p></div></div></div>
+                        <div class="info-card"><h4>Ciphers</h4><div class="algo-list"><div class="algo-item"><span class="algo-badge">caesar</span><p>Byte shift. Use a number as key.</p></div><div class="algo-item"><span class="algo-badge">xor</span><p>XOR stream. Use any string as key.</p></div></div></div>
                     </div>
                 </div>
             </div>
+            <!-- Text stego disabled — image mode only -->
+            <!-- Image mode (active) -->
+            <div id="image-mode" class="mode-panel active">
+                <div class="tool-tabs">
+                    <button class="tool-tab active" data-view="image-hide">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        Hide in Image
+                    </button>
+                    <button class="tool-tab" data-view="image-extract">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        Extract from Image
+                    </button>
+                </div>
+                <div class="tool-wrapper">
+                    <div class="tool-main">
+                        <div id="image-hide-view" class="view active">
+                            <form id="image-hide-form" class="form-card">
+                                <div class="form-group">
+                                    <label>Cover Image <span class="label-note">(PNG or BMP — JPEG not supported)</span></label>
+                                    <div class="image-drop-zone">
+                                        <input type="file" id="cover-image" accept=".png,.bmp" required>
+                                        <label for="cover-image" class="image-drop-label">
+                                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                            <span id="cover-image-name">Click to upload PNG or BMP</span>
+                                        </label>
+                                    </div>
+                                    <div class="char-info">capacity: <strong id="image-capacity">—</strong></div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="image-secret-message">Secret Message</label>
+                                    <textarea id="image-secret-message" rows="3" placeholder="The message to hide..." required></textarea>
+                                    <div class="secret-char-info"><span class="hint"><strong id="image-secret-count">0</strong> chars</span><span class="hint" id="image-capacity-status"></span></div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group"><label for="image-hide-algorithm">Cipher</label><select id="image-hide-algorithm" required><option value="caesar">Caesar Cipher</option><option value="xor">XOR Stream Cipher</option></select></div>
+                                    <div class="form-group"><label for="image-hide-key">Key</label><input type="text" id="image-hide-key" placeholder="Encryption key" required></div>
+                                </div>
+                                <button type="submit" class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Hide in Image</button>
+                            </form>
+                            <div id="image-hide-result" class="result-card" style="display:none;">
+                                <div class="result-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><h3>Stego image ready</h3></div>
+                                <div class="image-preview-wrap"><img id="stego-image-preview" alt="Stego image preview"></div>
+                                <div class="button-group"><button id="download-stego-image" class="btn btn-secondary"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download stego.png</button></div>
+                            </div>
+                        </div>
+                        <div id="image-extract-view" class="view">
+                            <form id="image-extract-form" class="form-card">
+                                <div class="form-group">
+                                    <label>Stego Image</label>
+                                    <div class="image-drop-zone">
+                                        <input type="file" id="stego-image-input" accept=".png,.bmp" required>
+                                        <label for="stego-image-input" class="image-drop-label">
+                                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                            <span id="stego-image-name">Click to upload stego PNG</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group"><label for="image-extract-algorithm">Cipher</label><select id="image-extract-algorithm" required><option value="caesar">Caesar Cipher</option><option value="xor">XOR Stream Cipher</option></select></div>
+                                    <div class="form-group"><label for="image-extract-key">Key</label><input type="text" id="image-extract-key" placeholder="Encryption key" required></div>
+                                </div>
+                                <button type="submit" class="btn btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg> Extract from Image</button>
+                            </form>
+                            <div id="image-extract-result" class="result-card" style="display:none;">
+                                <div class="result-header"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><h3>Secret message extracted</h3></div>
+                                <textarea id="image-extracted-output" rows="5" readonly></textarea>
+                                <div class="button-group"><button onclick="copyToClipboard('image-extracted-output')" class="btn btn-secondary"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy</button></div>
+                            </div>
+                        </div>
+                        <div id="image-error-box" class="error-box" style="display:none;"></div>
+                    </div>
+                    <div class="tool-info">
+                        <div class="info-card"><h4>Image mode</h4><div class="info-steps"><div class="info-step"><div class="info-step-num">1</div><p>Upload a PNG or BMP cover image.</p></div><div class="info-step"><div class="info-step-num">2</div><p>Enter message, pick cipher + key.</p></div><div class="info-step"><div class="info-step-num">3</div><p>Download the stego PNG — visually identical.</p></div><div class="info-step"><div class="info-step-num">4</div><p>Upload stego PNG in Extract with same cipher + key to reveal.</p></div></div></div>
+                        <div class="info-card"><h4>How LSB works</h4><div class="info-steps"><div class="info-step"><div class="info-step-num">R</div><p>Each pixel has R, G, B channels. The LSB of each channel stores one bit of your encrypted message.</p></div><div class="info-step"><div class="info-step-num">±1</div><p>Pixel values change by at most ±1 — imperceptible to the human eye.</p></div></div></div>
+                    </div>
+                </div>
+            </div>
+
         </section>
     </div>
 
@@ -349,7 +349,7 @@
                 </svg>
                 InvisiCrypt
             </div>
-            <p class="footer-copy">Text steganography — C++ engine, Node.js API.</p>
+            <p class="footer-copy">Text &amp; Image steganography — C++ + OpenCV engine, Node.js API.</p>
             <div class="footer-links">
                 <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
             </div>

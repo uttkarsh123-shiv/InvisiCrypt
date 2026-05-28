@@ -1,9 +1,9 @@
-// ── Utilities (global for onclick handlers) ──────────────────────────────────
+// ── Utilities ─────────────────────────────────────────────────────────────────
 
 function copyToClipboard(elementId) {
-    const textarea = document.getElementById(elementId);
-    textarea.select();
-    navigator.clipboard.writeText(textarea.value).then(() => {
+    const el = document.getElementById(elementId);
+    el.select();
+    navigator.clipboard.writeText(el.value).then(() => {
         const btn = window.event.target.closest('button');
         const orig = btn.innerHTML;
         btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
@@ -16,181 +16,221 @@ function downloadText(elementId, filename) {
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     const url  = URL.createObjectURL(blob);
     const a    = Object.assign(document.createElement('a'), { href: url, download: filename });
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
-function showError(msg) {
-    const box = document.getElementById('error-box');
+function setLoading(btn, loading, loadingText) {
+    if (loading) {
+        btn._orig = btn.innerHTML;
+        btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin .7s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> ${loadingText}`;
+        btn.disabled = true;
+    } else {
+        btn.innerHTML = btn._orig;
+        btn.disabled = false;
+    }
+}
+
+function showError(boxId, msg) {
+    const box = document.getElementById(boxId);
     box.textContent = msg;
     box.style.display = 'block';
     box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-function hideError() {
-    const box = document.getElementById('error-box');
+function hideError(boxId) {
+    const box = document.getElementById(boxId);
     if (box) box.style.display = 'none';
 }
 
-// ── Switch active view ────────────────────────────────────────────────────────
+// ── Mode switching (Text / Image) ─────────────────────────────────────────────
+
+function switchMode(mode) {
+    document.querySelectorAll('.mode-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+    document.querySelectorAll('.mode-panel').forEach(p => p.classList.toggle('active', p.id === `${mode}-mode`));
+}
+
+// ── View switching (hide / extract within a mode) ─────────────────────────────
 
 function switchView(viewName) {
-    // views
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById(`${viewName}-view`).classList.add('active');
+    const target = document.getElementById(`${viewName}-view`);
+    if (target) target.classList.add('active');
 
-    // all tab controls (navbar + tool section)
     document.querySelectorAll('[data-view]').forEach(el => {
         el.classList.toggle('active', el.dataset.view === viewName);
     });
 
-    hideError();
+    hideError('error-box');
+    hideError('image-error-box');
 }
 
 // ── DOM Ready ─────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Wire up every element with data-view (navbar tabs + tool tabs)
+    // Mode tabs (disabled — image only, no switcher needed)
+    // document.querySelectorAll('.mode-tab').forEach(...)
+
+    // View tabs + navbar pills
     document.querySelectorAll('[data-view]').forEach(el => {
         el.addEventListener('click', () => switchView(el.dataset.view));
     });
 
-    // ── File uploads ──────────────────────────────────────────────────────────
+    // Start on image-hide
+    switchView('image-hide');
 
-    document.getElementById('cover-file').addEventListener('change', e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = ev => {
-            document.getElementById('cover-text').value = ev.target.result;
-            updateCounts();
-        };
-        reader.readAsText(file);
+    // ── Text stego handlers disabled ──────────────────────────────────────────
+    // Text file uploads, char counts, hide form, extract form removed.
+    // Re-enable by restoring handlers for cover-file, stego-file,
+    // cover-text input, hide-form submit, extract-form submit.
+
+    // ── Image: cover upload + capacity check ──────────────────────────────────
+
+    let imageCapacityBytes = 0;
+    let stegoImageBlob     = null;
+
+    document.getElementById('cover-image').addEventListener('change', async e => {
+        const file = e.target.files[0]; if (!file) return;
+        document.getElementById('cover-image-name').textContent = file.name;
+        document.getElementById('image-capacity').textContent = 'checking…';
+        document.getElementById('image-capacity-status').textContent = '';
+
+        const fd = new FormData();
+        fd.append('image', file);
+
+        try {
+            const res  = await fetch('/api/image-capacity', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (res.ok) {
+                imageCapacityBytes = data.capacityBytes;
+                document.getElementById('image-capacity').textContent =
+                    imageCapacityBytes.toLocaleString() + ' bytes';
+                updateImageCounts();
+            } else {
+                document.getElementById('image-capacity').textContent = 'invalid image';
+                showError('image-error-box', data.error + (data.details ? ': ' + data.details : ''));
+            }
+        } catch (err) {
+            document.getElementById('image-capacity').textContent = 'error';
+        }
     });
 
-    document.getElementById('stego-file').addEventListener('change', e => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = ev => { document.getElementById('stego-text').value = ev.target.result; };
-        reader.readAsText(file);
+    document.getElementById('stego-image-input').addEventListener('change', e => {
+        const file = e.target.files[0]; if (!file) return;
+        document.getElementById('stego-image-name').textContent = file.name;
     });
 
-    // ── Character counts ──────────────────────────────────────────────────────
+    // ── Image: message char count vs capacity ─────────────────────────────────
 
-    function updateCounts() {
-        const coverLen  = document.getElementById('cover-text').value.length;
-        const secretLen = document.getElementById('secret-message').value.length;
-        const capacity  = Math.max(0, Math.floor((coverLen - 1) / 2));
+    function updateImageCounts() {
+        const msgLen = document.getElementById('image-secret-message').value.length;
+        document.getElementById('image-secret-count').textContent = msgLen;
 
-        document.getElementById('max-capacity').textContent    = capacity;
-        document.getElementById('secret-char-count').textContent = secretLen;
+        const status = document.getElementById('image-capacity-status');
+        if (!imageCapacityBytes || !msgLen) { status.textContent = ''; status.className = 'hint'; return; }
 
-        const status = document.getElementById('capacity-status');
-        if (!coverLen || !secretLen) {
-            status.textContent = '';
-            status.className = 'hint';
-        } else if (secretLen > capacity) {
-            const over = secretLen - capacity;
-            status.textContent = `⚠ Too long by ${over} char${over > 1 ? 's' : ''}`;
+        // Rough estimate: each char ~1 byte after encryption
+        if (msgLen > imageCapacityBytes) {
+            status.textContent = `⚠ Exceeds capacity by ${msgLen - imageCapacityBytes} bytes`;
             status.className = 'hint error-text';
         } else {
-            const left = capacity - secretLen;
-            status.textContent = `✓ ${left} char${left !== 1 ? 's' : ''} remaining`;
+            const left = imageCapacityBytes - msgLen;
+            status.textContent = `✓ ${left.toLocaleString()} bytes remaining`;
             status.className = 'hint success-text';
         }
     }
 
-    document.getElementById('cover-text').addEventListener('input', updateCounts);
-    document.getElementById('secret-message').addEventListener('input', updateCounts);
-    updateCounts();
+    document.getElementById('image-secret-message').addEventListener('input', updateImageCounts);
 
-    // ── Hide form ─────────────────────────────────────────────────────────────
+    // ── Image: hide ───────────────────────────────────────────────────────────
 
-    document.getElementById('hide-form').addEventListener('submit', async e => {
+    document.getElementById('image-hide-form').addEventListener('submit', async e => {
         e.preventDefault();
-        hideError();
+        hideError('image-error-box');
 
-        const coverText     = document.getElementById('cover-text').value;
-        const secretMessage = document.getElementById('secret-message').value;
-        const algorithm     = document.getElementById('hide-algorithm').value;
-        const key           = document.getElementById('hide-key').value;
+        const imageFile     = document.getElementById('cover-image').files[0];
+        const secretMessage = document.getElementById('image-secret-message').value;
+        const algorithm     = document.getElementById('image-hide-algorithm').value;
+        const key           = document.getElementById('image-hide-key').value;
 
-        if (!coverText)     return showError('Please provide cover text or upload a file.');
-        if (!secretMessage) return showError('Please enter a secret message.');
-        if (!key)           return showError('Please enter an encryption key.');
+        if (!imageFile)     return showError('image-error-box', 'Please upload a cover image.');
+        if (!secretMessage) return showError('image-error-box', 'Please enter a secret message.');
+        if (!key)           return showError('image-error-box', 'Please enter an encryption key.');
 
         const btn = e.target.querySelector('button[type="submit"]');
-        const origHTML = btn.innerHTML;
-        btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin .7s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Hiding…';
-        btn.disabled = true;
+        setLoading(btn, true, 'Embedding…');
 
         try {
-            const res  = await fetch('/api/hide', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ coverText, secretMessage, algorithm, key })
-            });
-            const data = await res.json();
+            const fd = new FormData();
+            fd.append('image', imageFile);
+            fd.append('secretMessage', secretMessage);
+            fd.append('algorithm', algorithm);
+            fd.append('key', key);
+
+            const res = await fetch('/api/image-hide', { method: 'POST', body: fd });
 
             if (res.ok) {
-                document.getElementById('stego-output').value = data.stegoText;
-                const result = document.getElementById('hide-result');
+                stegoImageBlob = await res.blob();
+                const url = URL.createObjectURL(stegoImageBlob);
+
+                document.getElementById('stego-image-preview').src = url;
+                document.getElementById('download-stego-image').onclick = () => {
+                    const a = Object.assign(document.createElement('a'), { href: url, download: 'stego.png' });
+                    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                };
+
+                const result = document.getElementById('image-hide-result');
                 result.style.display = 'block';
                 result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             } else {
-                showError(data.error || 'Failed to hide message.');
+                const data = await res.json();
+                showError('image-error-box', data.error + (data.details ? ': ' + data.details : ''));
             }
         } catch (err) {
-            showError('Network error: ' + err.message);
+            showError('image-error-box', 'Network error: ' + err.message);
         } finally {
-            btn.innerHTML = origHTML;
-            btn.disabled  = false;
+            setLoading(btn, false);
         }
     });
 
-    // ── Extract form ──────────────────────────────────────────────────────────
+    // ── Image: extract ────────────────────────────────────────────────────────
 
-    document.getElementById('extract-form').addEventListener('submit', async e => {
+    document.getElementById('image-extract-form').addEventListener('submit', async e => {
         e.preventDefault();
-        hideError();
+        hideError('image-error-box');
 
-        const stegoText = document.getElementById('stego-text').value;
-        const algorithm = document.getElementById('extract-algorithm').value;
-        const key       = document.getElementById('extract-key').value;
+        const imageFile = document.getElementById('stego-image-input').files[0];
+        const algorithm = document.getElementById('image-extract-algorithm').value;
+        const key       = document.getElementById('image-extract-key').value;
 
-        if (!stegoText) return showError('Please provide stego text or upload a file.');
-        if (!key)       return showError('Please enter the encryption key.');
+        if (!imageFile) return showError('image-error-box', 'Please upload a stego image.');
+        if (!key)       return showError('image-error-box', 'Please enter the encryption key.');
 
         const btn = e.target.querySelector('button[type="submit"]');
-        const origHTML = btn.innerHTML;
-        btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin .7s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Extracting…';
-        btn.disabled = true;
+        setLoading(btn, true, 'Extracting…');
 
         try {
-            const res  = await fetch('/api/extract', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ stegoText, algorithm, key })
-            });
+            const fd = new FormData();
+            fd.append('image', imageFile);
+            fd.append('algorithm', algorithm);
+            fd.append('key', key);
+
+            const res  = await fetch('/api/image-extract', { method: 'POST', body: fd });
             const data = await res.json();
 
             if (res.ok) {
-                document.getElementById('extracted-output').value = data.secretMessage;
-                const result = document.getElementById('extract-result');
+                document.getElementById('image-extracted-output').value = data.secretMessage;
+                const result = document.getElementById('image-extract-result');
                 result.style.display = 'block';
                 result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             } else {
-                showError(data.error || 'Failed to extract message.');
+                showError('image-error-box', data.error + (data.details ? ': ' + data.details : ''));
             }
         } catch (err) {
-            showError('Network error: ' + err.message);
+            showError('image-error-box', 'Network error: ' + err.message);
         } finally {
-            btn.innerHTML = origHTML;
-            btn.disabled  = false;
+            setLoading(btn, false);
         }
     });
 
