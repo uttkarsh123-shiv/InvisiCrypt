@@ -1,12 +1,12 @@
 require('dotenv').config();
 
-const express  = require('express');
-const cors     = require('cors');
-const multer   = require('multer');
+const express   = require('express');
+const cors      = require('cors');
+const multer    = require('multer');
 const { spawn } = require('child_process');
-const path     = require('path');
-const fs       = require('fs');
-const os       = require('os');
+const path      = require('path');
+const fs        = require('fs');
+const os        = require('os');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -20,28 +20,24 @@ app.use(cors());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-// Multer — store uploads in OS temp dir, accept only PNG/BMP
+// Multer — OS temp dir, PNG/BMP only, 10 MB max
 const upload = multer({
     dest: os.tmpdir(),
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB max
-    fileFilter: (req, file, cb) => {
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: (_req, file, cb) => {
         const allowed = ['image/png', 'image/bmp', 'image/x-bmp'];
-        if (allowed.includes(file.mimetype)) {
-            cb(null, true);
-        } else {
-            cb(new Error('Only PNG and BMP images are supported. JPEG is lossy and will corrupt hidden data.'));
-        }
+        allowed.includes(file.mimetype)
+            ? cb(null, true)
+            : cb(new Error('Only PNG and BMP are supported. JPEG is lossy and will corrupt hidden data.'));
     }
 });
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const getBinaryPath = () => {
-    const exeName    = process.platform === 'win32' ? 'textstego.exe' : 'textstego';
-    const binaryPath = path.join(__dirname, exeName);
-    if (!fs.existsSync(binaryPath)) {
-        throw new Error(`Binary not found at ${binaryPath}. Run 'npm run build' first.`);
-    }
-    return binaryPath;
+    const name = process.platform === 'win32' ? 'textstego.exe' : 'textstego';
+    const p    = path.join(__dirname, name);
+    if (!fs.existsSync(p)) throw new Error(`Binary not found at ${p}. Run 'npm run build' first.`);
+    return p;
 };
 
 const VALID_ALGORITHMS = ['caesar', 'xor'];
@@ -58,11 +54,9 @@ const validateAlgorithmKey = (algorithm, key, res) => {
     return true;
 };
 
-// Run binary, collect stdout/stderr, resolve with { stdout, stderr, code }
 const runBinary = (args, stdinData = null) => new Promise((resolve) => {
     const proc = spawn(getBinaryPath(), args, { stdio: ['pipe', 'pipe', 'pipe'] });
-    let stdout = '';
-    let stderr = '';
+    let stdout = '', stderr = '';
 
     proc.stdout.on('data', d => { stdout += d.toString(); });
     proc.stderr.on('data', d => { stderr += d.toString(); });
@@ -74,7 +68,7 @@ const runBinary = (args, stdinData = null) => new Promise((resolve) => {
         } else {
             proc.stdin.end();
         }
-        proc.stdin.on('error', () => {}); // suppress EPIPE
+        proc.stdin.on('error', () => {});
     }
 
     proc.on('close', code => resolve({ stdout, stderr, code }));
@@ -82,101 +76,51 @@ const runBinary = (args, stdinData = null) => new Promise((resolve) => {
 });
 
 // ── Routes ────────────────────────────────────────────────────────────────────
-app.get('/', (req, res) => res.render('index', { title: 'InvisiCrypt' }));
+app.get('/', (_req, res) => res.render('index', { title: 'InvisiCrypt' }));
 
-// ── Text: hide ────────────────────────────────────────────────────────────────
-app.post('/api/hide', async (req, res) => {
-    try {
-        const { coverText, secretMessage, algorithm, key } = req.body;
+// ── Text stego endpoints (disabled — image mode only) ─────────────────────────
+// To re-enable, uncomment and restore the handler bodies.
+//
+// app.post('/api/hide',    async (req, res) => { /* text hide logic */ });
+// app.post('/api/extract', async (req, res) => { /* text extract logic */ });
 
-        if (!coverText  || typeof coverText  !== 'string') return res.status(400).json({ error: 'coverText is required' });
-        if (!secretMessage || typeof secretMessage !== 'string') return res.status(400).json({ error: 'secretMessage is required' });
-        if (coverText.length  > 100000) return res.status(400).json({ error: 'coverText too large (max 100,000 chars)' });
-        if (secretMessage.length > 10000)  return res.status(400).json({ error: 'secretMessage too large (max 10,000 chars)' });
-        if (!validateAlgorithmKey(algorithm, key, res)) return;
-
-        const { stdout, stderr, code } = await runBinary(
-            ['hide', coverText, secretMessage, algorithm, key]
-        );
-
-        if (code !== 0) {
-            const msg = stderr.match(/ERROR:\s*(.+)/)?.[1] || stderr || 'Unknown error';
-            return res.status(500).json({ error: 'Failed to hide message', details: msg.trim() });
-        }
-        if (!stdout) return res.status(500).json({ error: 'Binary returned empty output' });
-
-        res.json({ stegoText: stdout });
-    } catch (err) {
-        res.status(500).json({ error: 'Internal server error', details: err.message });
-    }
-});
-
-// ── Text: extract ─────────────────────────────────────────────────────────────
-app.post('/api/extract', async (req, res) => {
-    try {
-        const { stegoText, algorithm, key } = req.body;
-
-        if (!stegoText || typeof stegoText !== 'string') return res.status(400).json({ error: 'stegoText is required' });
-        if (!validateAlgorithmKey(algorithm, key, res)) return;
-
-        const { stdout, stderr, code } = await runBinary(
-            ['extract', algorithm, key],
-            stegoText
-        );
-
-        if (code !== 0) {
-            const msg = stderr.match(/ERROR:\s*(.+)/)?.[1] || stderr || 'Unknown error';
-            return res.status(500).json({ error: 'Failed to extract message', details: msg.trim() });
-        }
-        if (!stdout) return res.status(500).json({ error: 'No message extracted — check stego text, algorithm, and key' });
-
-        res.json({ secretMessage: stdout });
-    } catch (err) {
-        res.status(500).json({ error: 'Internal server error', details: err.message });
-    }
-});
-
-// ── Image: capacity check ─────────────────────────────────────────────────────
+// ── Image: capacity ───────────────────────────────────────────────────────────
 app.post('/api/image-capacity', upload.single('image'), async (req, res) => {
-    const tmpPath = req.file?.path;
+    const tmp = req.file?.path;
     try {
         if (!req.file) return res.status(400).json({ error: 'image file is required' });
 
-        const { stdout, stderr, code } = await runBinary(['image-capacity', tmpPath]);
-
+        const { stdout, stderr, code } = await runBinary(['image-capacity', tmp]);
         if (code !== 0) {
             const msg = stderr.match(/ERROR:\s*(.+)/)?.[1] || stderr || 'Unknown error';
             return res.status(400).json({ error: 'Invalid image', details: msg.trim() });
         }
-
         res.json({ capacityBytes: parseInt(stdout.trim(), 10) });
     } catch (err) {
         res.status(500).json({ error: 'Internal server error', details: err.message });
     } finally {
-        if (tmpPath) fs.unlink(tmpPath, () => {});
+        if (tmp) fs.unlink(tmp, () => {});
     }
 });
 
 // ── Image: hide ───────────────────────────────────────────────────────────────
 app.post('/api/image-hide', upload.single('image'), async (req, res) => {
-    const tmpInput  = req.file?.path;
-    const tmpOutput = tmpInput ? tmpInput + '_stego.png' : null;
+    const tmpIn  = req.file?.path;
+    const tmpOut = tmpIn ? tmpIn + '_stego.png' : null;
 
     try {
         if (!req.file) return res.status(400).json({ error: 'image file is required' });
 
         const { secretMessage, algorithm, key } = req.body;
 
-        if (!secretMessage || typeof secretMessage !== 'string' || secretMessage.trim() === '') {
+        if (!secretMessage || secretMessage.trim() === '')
             return res.status(400).json({ error: 'secretMessage is required' });
-        }
-        if (secretMessage.length > 50000) {
+        if (secretMessage.length > 50000)
             return res.status(400).json({ error: 'secretMessage too large (max 50,000 chars)' });
-        }
         if (!validateAlgorithmKey(algorithm, key, res)) return;
 
-        const { stdout, stderr, code } = await runBinary(
-            ['image-hide', tmpInput, tmpOutput, algorithm, key],
+        const { stderr, code } = await runBinary(
+            ['image-hide', tmpIn, tmpOut, algorithm, key],
             secretMessage
         );
 
@@ -184,31 +128,25 @@ app.post('/api/image-hide', upload.single('image'), async (req, res) => {
             const msg = stderr.match(/ERROR:\s*(.+)/)?.[1] || stderr || 'Unknown error';
             return res.status(500).json({ error: 'Failed to hide message in image', details: msg.trim() });
         }
-
-        if (!fs.existsSync(tmpOutput)) {
+        if (!fs.existsSync(tmpOut))
             return res.status(500).json({ error: 'Output image was not created' });
-        }
 
-        // Stream the stego PNG back to the client
         res.setHeader('Content-Type', 'image/png');
         res.setHeader('Content-Disposition', 'attachment; filename="stego.png"');
-
-        const stream = fs.createReadStream(tmpOutput);
+        const stream = fs.createReadStream(tmpOut);
         stream.pipe(res);
-        stream.on('end', () => {
-            fs.unlink(tmpOutput, () => {});
-        });
+        stream.on('end', () => fs.unlink(tmpOut, () => {}));
 
     } catch (err) {
         res.status(500).json({ error: 'Internal server error', details: err.message });
     } finally {
-        if (tmpInput) fs.unlink(tmpInput, () => {});
+        if (tmpIn) fs.unlink(tmpIn, () => {});
     }
 });
 
 // ── Image: extract ────────────────────────────────────────────────────────────
 app.post('/api/image-extract', upload.single('image'), async (req, res) => {
-    const tmpPath = req.file?.path;
+    const tmp = req.file?.path;
     try {
         if (!req.file) return res.status(400).json({ error: 'image file is required' });
 
@@ -216,28 +154,28 @@ app.post('/api/image-extract', upload.single('image'), async (req, res) => {
         if (!validateAlgorithmKey(algorithm, key, res)) return;
 
         const { stdout, stderr, code } = await runBinary(
-            ['image-extract', tmpPath, algorithm, key]
+            ['image-extract', tmp, algorithm, key]
         );
 
         if (code !== 0) {
             const msg = stderr.match(/ERROR:\s*(.+)/)?.[1] || stderr || 'Unknown error';
             return res.status(500).json({ error: 'Failed to extract message from image', details: msg.trim() });
         }
-        if (!stdout) return res.status(500).json({ error: 'No message extracted — check algorithm and key' });
+        if (!stdout)
+            return res.status(500).json({ error: 'No message extracted — check algorithm and key' });
 
         res.json({ secretMessage: stdout });
     } catch (err) {
         res.status(500).json({ error: 'Internal server error', details: err.message });
     } finally {
-        if (tmpPath) fs.unlink(tmpPath, () => {});
+        if (tmp) fs.unlink(tmp, () => {});
     }
 });
 
-// ── Health check ──────────────────────────────────────────────────────────────
-app.get('/api/health', (req, res) => {
+// ── Health ────────────────────────────────────────────────────────────────────
+app.get('/api/health', (_req, res) => {
     try {
-        const binaryPath = getBinaryPath();
-        res.json({ status: 'ok', binary_exists: fs.existsSync(binaryPath) });
+        res.json({ status: 'ok', binary_exists: fs.existsSync(getBinaryPath()) });
     } catch (err) {
         res.status(500).json({ status: 'error', error: err.message });
     }
