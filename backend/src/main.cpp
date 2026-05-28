@@ -23,57 +23,14 @@ int main(int argc, char* argv[]) {
 
     std::string command = argv[1];
 
-    // ── Text: hide ────────────────────────────────────────────────────────────
-    if (command == "hide") {
-        if (argc < 6) {
-            std::cerr << "Usage: textstego hide <cover_text> <secret_message> <algorithm> <key>" << std::endl;
-            return 1;
-        }
-        std::string cover_text     = argv[2];
-        std::string secret_message = argv[3];
-        std::string algorithm      = argv[4];
-        std::string key            = argv[5];
+    // ── Text: hide (disabled — image mode only) ──────────────────────────────
+    // if (command == "hide") { ... }
 
-        try {
-            std::string stego_text = hide_message(cover_text, secret_message, algorithm, key);
-            std::cout << stego_text;
-            return 0;
-        } catch (const std::exception& e) {
-            std::cerr << "ERROR: " << e.what() << std::endl;
-            return 1;
-        }
-    }
-
-    // ── Text: extract ─────────────────────────────────────────────────────────
-    else if (command == "extract") {
-        if (argc < 4) {
-            std::cerr << "Usage: textstego extract <algorithm> <key>" << std::endl;
-            return 1;
-        }
-        std::string algorithm = argv[2];
-        std::string key       = argv[3];
-
-        std::string stego_text;
-        char ch;
-        while (std::cin.get(ch)) stego_text += ch;
-
-        if (stego_text.empty()) {
-            std::cerr << "ERROR: No input provided via stdin" << std::endl;
-            return 1;
-        }
-
-        try {
-            std::string secret = extract_message(stego_text, algorithm, key);
-            std::cout << secret;
-            return 0;
-        } catch (const std::exception& e) {
-            std::cerr << "ERROR: " << e.what() << std::endl;
-            return 1;
-        }
-    }
+    // ── Text: extract (disabled — image mode only) ────────────────────────────
+    // else if (command == "extract") { ... }
 
     // ── Image: hide ───────────────────────────────────────────────────────────
-    else if (command == "image-hide") {
+    if (command == "image-hide") {
         if (argc < 6) {
             std::cerr << "Usage: textstego image-hide <input.png> <output.png> <algorithm> <key>" << std::endl;
             return 1;
@@ -103,7 +60,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    // ── Image: extract ────────────────────────────────────────────────────────
     else if (command == "image-extract") {
         if (argc < 5) {
             std::cerr << "Usage: textstego image-extract <stego.png> <algorithm> <key>" << std::endl;
@@ -143,7 +99,7 @@ int main(int argc, char* argv[]) {
 
     else {
         std::cerr << "Unknown command: " << command << std::endl;
-        std::cerr << "Commands: hide, extract, image-hide, image-extract, image-capacity" << std::endl;
+        std::cerr << "Commands: image-hide, image-extract, image-capacity" << std::endl;
         return 1;
     }
 }
