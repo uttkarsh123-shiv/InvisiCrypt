@@ -10,3 +10,14 @@ backend/textstego.exe
 backend/textstego
 *.log
 .DS_Store
+
+
+```gitignore
+node_modules
+backend/build
+*.exe
+.git
+.github
+.vscode
+.env
+```
