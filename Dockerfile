@@ -1,5 +1,3 @@
-```dockerfile
-# ── Stage 1: Build C++ binary ────────────────────────────────────────────────
 FROM debian:bookworm-slim AS cpp-builder
 
 WORKDIR /build
@@ -59,4 +57,3 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 
 # Start app
 CMD ["npm", "start"]
-```
